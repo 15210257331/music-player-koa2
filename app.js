@@ -18,6 +18,7 @@ onerror(app)
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
+
 app.use(json())
 
 app.use(logger())
@@ -27,10 +28,6 @@ app.use(static(__dirname + '/public'))
 app.use(views(__dirname + '/views', {
   extension: 'ejs'
 }))
-
-app.use(router.routes());
-
-app.use(router.allowedMethods());
 
 // 配置session
 app.keys = ['some secret hurr'];   /*cookie的签名*/
@@ -48,6 +45,10 @@ app.use(session(CONFIG, app));
 // 自定义中间件
 app.use(timeLog())
 
+app.use(router.routes());
+
+app.use(router.allowedMethods());
+
 // 注册路由
 fs.readdirSync(path.join(__dirname, 'routes')).forEach(item => {
   if(!(/\.js$/i.test(item))) {
@@ -57,7 +58,9 @@ fs.readdirSync(path.join(__dirname, 'routes')).forEach(item => {
       router.use(routeUrl, routerControll.routes());
     })
   } else {
-    return;
+    let routeUrl = `/api/${item.replace(/\.js$/i, '')}`
+    let routerControll = require(`./routes/${item}`);
+    router.use(routeUrl, routerControll.routes());
   }
 })
 
