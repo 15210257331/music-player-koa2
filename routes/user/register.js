@@ -1,41 +1,37 @@
-const router = require('koa-router')()
+const Router = require('koa-router');
+const router = new Router();
+const User = require('../../db/user.model');
 
-router.post('/', async (ctx, next) => {
+let registerController = async (ctx, next) => {
   let userInfo = ctx.request.body;
-  //给新用户一个默认的头像
   Object.assign(userInfo, {
     avatar: avatarUrl
-  }); 
-  User.findOne({
-    username: userInfo.username
-  }, function (err, data) {
-    if (err) {
+  });
+  try {
+    let doc = await User.findOne({
+      username: userInfo.username
+    })
+    if (doc) {
       ctx.body = {
         result: false,
-        msg: '注册失败'
-      }
-    } else if (data) {
-      ctx.body = {
-        result: false,
-        msg: '用户名已存在'
+        errorMessage: '用户名已存在'
       }
     } else {
-      User.create(userInfo, function (err, doc) {
-        if (err) {
-          ctx.body = {
-            result: false,
-            msg: '注册失败'
-          }
-        } else {
-          ctx.body = {
-            result: true,
-            msg: '注册成功'
-          }
-        }
-      });
+      await User.create(userInfo);
+      ctx.body = {
+        result: true,
+        data: '注册成功'
+      }
     }
-  });
-})
+  } catch (err) {
+    ctx.body = {
+      result: false,
+      errorMessage: err
+    }
+  }
+  await next();
+}
+router.post('/', registerController)
 
 
 module.exports = router
