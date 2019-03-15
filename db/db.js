@@ -5,6 +5,7 @@ const url = "mongodb://39.104.147.212:27017/music-player";
 mongoose.connect(url,{useNewUrlParser:true});
 
 mongoose.connection.on('connected', function () {
+    console.log('');
     console.log('connection to ' + url + ' successful');
 });
 

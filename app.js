@@ -7,27 +7,24 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const static = require('koa-static');
 const timeLog = require('./middleware/timeLog');
-const router = require('koa-router')();
-const fs = require('fs')
-const path = require('path')
 const session = require('koa-session')
-
-let apiArr = [];
+const cors = require('koa-cors');
+const routerConfig = require('./routes/index')
 
 // error handler
 onerror(app)
-
-app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text']
-}))
 
 app.use(json())
 
 app.use(logger())
 
+// app.use(cors());
+
+app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
+
 app.use(static(__dirname + '/public'))
 
-app.use(views(__dirname + '/views', {
+app.use(views(__dirname + '/public/views', {
   extension: 'ejs'
 }))
 
@@ -54,29 +51,8 @@ app.use(session(CONFIG, app));
 // 自定义中间件
 app.use(timeLog())
 
-app.use(router.routes());
-
-app.use(router.allowedMethods());
-
-var walk = function (dirPath, apiUrl) {
-  fs.readdirSync(dirPath).forEach(function (file) {
-    let filePath = path.join(dirPath, '/' + file)
-    let routeUrl = apiUrl
-    let stat = fs.statSync(filePath)
-    if (stat.isFile()) {
-      if ((/\.js$/i.test(file))) {
-        routeUrl = path.join(routeUrl, '/', file.replace(/\.js$/i, ''));
-        router.use(routeUrl, require(filePath).routes());
-        // apiArr.push(routeUrl);
-      }
-    } else if (stat.isDirectory()) {
-      routeUrl = path.join(routeUrl, '/' + file)
-      walk(filePath, routeUrl)
-    }
-  })
-}
-
-walk(path.join(__dirname, 'routes'), '/api');
+// 注册路由
+app.use(routerConfig.routes(), routerConfig.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
