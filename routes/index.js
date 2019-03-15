@@ -3,10 +3,10 @@ const UserController = require('../controllers/user')
 const ViewController = require('../controllers/view')
 const SonglistController = require('../controllers/songlist');
 const CollectionController = require('../controllers/collection');
-
+const MusicController = require('../controllers/music');
 
 const router = new Router({
-    prefix: '/api/v1'
+    prefix: '/api'
 })
 
 /**
@@ -42,7 +42,8 @@ router.patch('/user/info', UserController.uploadConfig, UserController.updateUse
 router.get('/collection', CollectionController.getCollection);
 // 添加到收藏
 router.post('/collection', CollectionController.addCollection);
-
+// 取消收藏
+router.delete('/collection/:songId', CollectionController.delete);
 
 /**
  * 我的歌单
@@ -51,5 +52,25 @@ router.post('/collection', CollectionController.addCollection);
 router.get('/songlist', SonglistController.getSonglist);
 // 新建歌单
 router.post('/songlist', SonglistController.newSonglist);
+
+
+/**
+ * 音乐
+ */
+// banner
+router.get('/music/banner', MusicController.banner);
+// 搜索
+router.post('/music/search', MusicController.search);
+// 音乐详情
+router.get('/musci/detail', MusicController.detail);
+// 音乐url
+router.get('/musci/url', MusicController.url);
+// 音乐歌词
+router.get('/musci/lyric', MusicController.lyric);
+
+
+
+
+
 
 module.exports = router

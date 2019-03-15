@@ -20,8 +20,9 @@ class SonglistController {
   }
 
   static async newSonglist(ctx, next) {
-
+    let songlistName = ctx.request.body.name;
   }
+  
 }
 
 module.exports = SonglistController

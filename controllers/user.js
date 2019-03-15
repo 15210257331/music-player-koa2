@@ -15,12 +15,12 @@ class UserController {
           if (!doc) {
             ctx.body = {
               result: false,
-              errorMessage: '用户名不存在'
+              err: '用户名不存在'
             }
           } else if (doc.password !== password) {
             ctx.body = {
               result: false,
-              errorMessage: '密码错误'
+              err: '密码错误'
             }
           } else {
             ctx.session.userInfo = doc;
@@ -32,7 +32,7 @@ class UserController {
         } catch (err) {
           ctx.body = {
             result: false,
-            errorMessage: err,
+            err: err,
           }
         }
         // await next();
@@ -77,7 +77,7 @@ class UserController {
           } else {
             ctx.body = {
               result: false,
-              errorMessage: '请登录'
+              err: '请登录'
             }
           }
       }
@@ -120,7 +120,7 @@ class UserController {
         } catch (err) {
           ctx.body = {
             result: false,
-            errorMessage: err
+            err: err
           }  
         }
       }
@@ -129,7 +129,7 @@ class UserController {
         ctx.session.maxAge = 0;
         ctx.body = {
           result: true,
-          msg: '退出成功'
+          data: '退出成功'
         }
       }
 
