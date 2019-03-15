@@ -1,10 +1,10 @@
 function timeLog(options) {
     return async function (ctx, next) {
-        // console.time(ctx.req.url);
+        console.log(ctx.request.url);
+        if (ctx.request.url === '/') {
+            ctx.response.redirect('/api/index'); 
+        }
         console.log('来了，老弟！');
-        // ctx.res.once('finish', function () {
-        //     console.timeEnd(ctx.req.url);
-        // });
         await next();
     }
 }
