@@ -1,6 +1,8 @@
 const Songlist = require('../db/songlist.model');
 
 class SonglistController {
+  
+  // 获取歌单列表
   static async getSonglist(ctx, next) {
     let userId = ctx.session.userInfo._id;
     try {
@@ -18,7 +20,7 @@ class SonglistController {
         }
     }
   }
-
+  // 新建歌单
   static async newSonglist(ctx, next) {
     let songlistName = ctx.request.body.name;
   }

@@ -4,6 +4,7 @@ const ViewController = require('../controllers/view')
 const SonglistController = require('../controllers/songlist');
 const CollectionController = require('../controllers/collection');
 const MusicController = require('../controllers/music');
+const HeroController = require('../controllers/hero');
 
 const router = new Router({
     prefix: '/api'
@@ -19,7 +20,7 @@ router.get('/doc', ViewController.doc);
 
 
 /**
- * 用户接口
+ * 用户
  */
 // 用户注册
 router.post('/user/register', UserController.register);
@@ -32,26 +33,7 @@ router.delete('/user/delete/:id', UserController.delete);
 // 获取用户信息
 router.get('/user/info', UserController.getUserInfo);
 // 修改用户信息
-router.patch('/user/info', UserController.uploadConfig, UserController.updateUserInfo);
-
-
-/**
- * 我的收藏
- */
-// 收藏列表
-router.get('/collection', CollectionController.getCollection);
-// 添加到收藏
-router.post('/collection', CollectionController.addCollection);
-// 取消收藏
-router.delete('/collection/:songId', CollectionController.delete);
-
-/**
- * 我的歌单
- */
-// 获取歌单
-router.get('/songlist', SonglistController.getSonglist);
-// 新建歌单
-router.post('/songlist', SonglistController.newSonglist);
+router.patch('/user/info', UserController.uploadImg, UserController.updateUserInfo);
 
 
 /**
@@ -67,10 +49,24 @@ router.get('/musci/detail', MusicController.detail);
 router.get('/musci/url', MusicController.url);
 // 音乐歌词
 router.get('/musci/lyric', MusicController.lyric);
+// 收藏列表
+router.get('/collection', CollectionController.getCollection);
+// 添加到收藏
+router.post('/collection', CollectionController.addCollection);
+// 取消收藏
+router.delete('/collection/:songId', CollectionController.delete);
+// 获取歌单
+router.get('/songlist', SonglistController.getSonglist);
+// 新建歌单
+router.post('/songlist', SonglistController.newSonglist);
 
-
-
-
+/**
+ * hero
+ */
+//分页获取英雄列表
+router.post('/heros/list', HeroController.getHerosList);
+// 根据id获取英雄详情
+router.get('/hero/:heroId', HeroController.getHeroById);
 
 
 module.exports = router

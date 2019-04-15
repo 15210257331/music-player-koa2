@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <style>
     body{
@@ -26,9 +27,22 @@
 </style>
 
 <body>
+    <div id="box"></div>
     <h2><%= subTitle%></h2>
     <p><%= title%></p>
     <a href="/api/doc">查看接口文档</a>
 </body>
-
+<script>
+    var box = document.getElementById('box');
+    var socket = io.connect('http://localhost:3000');
+     
+      socket.on('getMsg', function(data){
+        console.log(data);
+        box.innerHTML = '<span>我是socket推送过来的数据'+ data +'</span>'
+      })
+      socket.on('event01', function (data) {
+        console.log(data);
+        socket.emit('event02', { my: 'data client' });
+      });
+  </script>
 </html>

@@ -82,7 +82,7 @@ class UserController {
           }
       }
 
-      static async uploadConfig() {
+      static async uploadImg() {
         const storageZip = multer.diskStorage({
             destination: function (req, file, cb) {
               let avatarPath = path.resolve(__dirname, '../../public/images/avatar'); //会对../进行解析
@@ -97,10 +97,12 @@ class UserController {
             storage: storageZip
           });
       }
-
+      
+      // 先将图片上传到服务器返回图片的地址, 将图片的地址传到后台
       static async updateUserInfo(ctx, next) {
         let newAvatar = `http://39.104.147.212:3000/images/avatar${ctx.request.body.file.filename}`;
-        let newUsername = ctx.request.body.username
+        let newUsername = ctx.request.body.username;
+        let newNickname = ctx.request.body.newNickname;
         try {
           let doc = await User.findOneAndUpdate({
             _id: ctx.session.userInfo._id
@@ -108,6 +110,7 @@ class UserController {
             $set: {
               avatar: newAvatar,
               username: newUsername,
+              nickname: newNickname
             }
           }, {
             new: true
