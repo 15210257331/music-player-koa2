@@ -8,6 +8,15 @@
     <title>Document</title>
 </head>
 <style>
+    body{
+        text-align: center;
+    }
+    h2{
+        text-align: center;
+        font-size: 38px;
+        color:darkturquoise;
+        margin-top: 60px;
+    }
     p {
         text-align: center;
         font-size: 30px;
@@ -17,10 +26,9 @@
 </style>
 
 <body>
-    <p>
-        <%= title%>
-    </p>
-
+    <h2><%= subTitle%></h2>
+    <p><%= title%></p>
+    <a href="/api/doc">查看接口文档</a>
 </body>
 
 </html>

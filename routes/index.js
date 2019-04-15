@@ -10,9 +10,9 @@ const router = new Router({
 })
 
 /**
- * view 展示
+ * view
  */
-// view
+// index
 router.get('/index', ViewController.index);
 // doc
 router.get('/doc', ViewController.doc);

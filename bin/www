@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+const open = require('open');
 /**
  * Module dependencies.
  */
@@ -86,4 +86,9 @@ function onListening() {
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
   console.log('Listening on ' + bind + ' successful!');
+  openExpor();
+}
+
+let openExpor = async () => {
+  await open(`http://localhost:${port}`);
 }
