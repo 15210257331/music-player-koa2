@@ -6,8 +6,8 @@ const User = require('../db/user.model');
 class UserController {
 
     static async login(ctx, next) {
-        let password = ctx.request.query.password;
-        let username = ctx.request.query.username;
+        let password = ctx.request.body.password;
+        let username = ctx.request.body.username;
         try {
           let doc = await User.findOne({
             username: username

@@ -25,7 +25,7 @@ router.get('/doc', ViewController.doc);
 // 用户注册
 router.post('/user/register', UserController.register);
 // 用户登录
-router.get('/user/login', UserController.login);
+router.post('/user/login', UserController.login);
 // 用户登出
 router.delete('/user/logout', UserController.logout);
 // 删除用户
