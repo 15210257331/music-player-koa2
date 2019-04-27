@@ -25,6 +25,7 @@ class MusicController {
             }
         }
     }
+    // 歌曲搜索
     static async search(ctx, next) {
         const data = {
             s: ctx.request.body.keywords,

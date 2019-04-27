@@ -1,7 +1,7 @@
 # server
-express 数据api
+ music player 数据提供
 
-### 酷狗音乐接口api
+### music player api
 
 ### npm install
 ### npm run start
