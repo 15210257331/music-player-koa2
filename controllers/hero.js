@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const async = require('async');
 const fs = require('fs');
 const http = require("http");
-const Hero = require("../db/hero.model");
+const Hero = require("../database/hero.model");
 
 
 class HeroController {

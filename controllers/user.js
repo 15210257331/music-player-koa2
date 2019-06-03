@@ -1,5 +1,5 @@
 const multer = require('multer');
-const User = require('../db/user.model');
+const User = require('../database/user.model');
 
 
 

@@ -1,8 +1,6 @@
 const Router = require('koa-router')
 const UserController = require('../controllers/user')
 const ViewController = require('../controllers/view')
-const SonglistController = require('../controllers/songlist');
-const CollectionController = require('../controllers/collection');
 const MusicController = require('../controllers/music');
 const HeroController = require('../controllers/hero');
 
@@ -49,16 +47,6 @@ router.get('/musci/detail', MusicController.detail);
 router.get('/musci/url', MusicController.url);
 // 音乐歌词
 router.get('/musci/lyric', MusicController.lyric);
-// 收藏列表
-router.get('/collection', CollectionController.getCollection);
-// 添加到收藏
-router.post('/collection', CollectionController.addCollection);
-// 取消收藏
-router.delete('/collection/:songId', CollectionController.delete);
-// 获取歌单
-router.get('/songlist', SonglistController.getSonglist);
-// 新建歌单
-router.post('/songlist', SonglistController.newSonglist);
 
 /**
  * hero
