@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const url = "mongodb://39.104.147.212:27017/music-player";
+const url = "mongodb://localhost:27017/blog";
+
 
 //连接数据库
 mongoose.connect(url,{useNewUrlParser:true});

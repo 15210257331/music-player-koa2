@@ -3,6 +3,7 @@ const UserController = require('../controllers/user')
 const ViewController = require('../controllers/view')
 const MusicController = require('../controllers/music');
 const HeroController = require('../controllers/hero');
+const ArticleController = require('../controllers/article');
 
 const router = new Router({
     prefix: '/api'
@@ -33,6 +34,10 @@ router.get('/user/info', UserController.getUserInfo);
 // 修改用户信息
 router.patch('/user/info', UserController.uploadImg, UserController.updateUserInfo);
 
+// add article
+router.post('/article/add', ArticleController.addArticle);
+router.post('/article/list', ArticleController.getArticleList);
+router.get('/article/:id', ArticleController.getArticleDetailById);
 
 /**
  * 音乐
