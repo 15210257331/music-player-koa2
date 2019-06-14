@@ -36,7 +36,7 @@ router.patch('/user/info', UserController.uploadImg, UserController.updateUserIn
 
 // add article
 router.post('/article/add', ArticleController.addArticle);
-router.post('/article/list', ArticleController.getArticleList);
+router.post('/article/list', ArticleController.getArticle);
 router.get('/article/:id', ArticleController.getArticleDetailById);
 
 /**
