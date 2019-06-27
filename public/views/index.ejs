@@ -9,40 +9,50 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <style>
-    body{
+    body {
         text-align: center;
     }
-    h2{
+    
+    h2 {
         text-align: center;
         font-size: 38px;
-        color:darkturquoise;
+        color: darkturquoise;
         margin-top: 60px;
     }
+    
     p {
         text-align: center;
         font-size: 30px;
         font-weight: bolder;
-        color:darkturquoise;
+        color: darkturquoise;
     }
 </style>
 
 <body>
     <div id="box"></div>
-    <h2><%= subTitle%></h2>
-    <p><%= title%></p>
+    <h2>
+        <%= subTitle%>
+    </h2>
+    <p>
+        <%= title%>
+    </p>
     <a href="/api/doc">查看接口文档</a>
 </body>
 <script>
     var box = document.getElementById('box');
-    var socket = io.connect('http://localhost:3000');
-     
-      socket.on('getMsg', function(data){
+    var socket = io.connect('http://localhost:4000');
+
+    socket.on('getMsg', function(data) {
         console.log(data);
-        box.innerHTML = '<span>我是socket推送过来的数据'+ data +'</span>'
-      })
-      socket.on('event01', function (data) {
-        console.log(data);
-        socket.emit('event02', { my: 'data client' });
-      });
-  </script>
+        box.innerHTML = '<span>我是socket推送过来的数据' + data + '</span>'
+    })  
+
+    socket.on('event01', function(data) {   
+        console.log(data);   
+        socket.emit('event02', {
+            my: 'data client'
+        });  
+    });
+</script>
+
 </html>
