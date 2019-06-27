@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const url = "mongodb://localhost:27017/blog";
+const url = "mongodb://blog:123456@39.104.147.212:27017/blog"; // 连接blog数据库
 
 
 //连接数据库
