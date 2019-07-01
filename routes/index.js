@@ -4,6 +4,7 @@ const ViewController = require('../controllers/view')
 const MusicController = require('../controllers/music');
 const HeroController = require('../controllers/hero');
 const ArticleController = require('../controllers/article');
+const TodoController = require('../controllers/todo');
 
 const router = new Router({
     prefix: '/api'
@@ -33,6 +34,13 @@ router.delete('/user/delete/:id', UserController.delete);
 router.get('/user/info', UserController.getUserInfo);
 // 修改用户信息
 router.patch('/user/info', UserController.uploadImg, UserController.updateUserInfo);
+
+
+// todo
+router.get('/todo/list', TodoController.getTodoList);
+router.post('/todo/add', TodoController.addTodo);
+router.post('/todo/update', TodoController.updateTodo);
+router.post('/todo/delete', TodoController.deleteTodo);
 
 // add article
 router.post('/article/add', ArticleController.addArticle);
