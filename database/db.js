@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const url = "mongodb://today:123456@39.104.147.212:27017/today"; // 连接today数据库
+const url = "mongodb://localhost:27017/todo"; // 连接today数据库
 
 
 //连接数据库

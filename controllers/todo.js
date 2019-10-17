@@ -3,7 +3,7 @@ const Todo = require("../database/todo.model");
 
 class TodoController {
 
-    // 查询todo列表
+    // 查询todo列表分页
     static async getTodoList(ctx, next) {
         let curPage = parseInt(ctx.request.query.curPage);
         let pageSize = parseInt(ctx.request.query.pageSize);
@@ -15,7 +15,8 @@ class TodoController {
             let total = await Todo.countDocuments();
             if (doc) {
                 ctx.body = {
-                    code: 10000,
+                    result: true,
+                    code: 200,
                     data: {
                         list: doc,
                         total: total
@@ -32,52 +33,74 @@ class TodoController {
         }
     }
 
-    // 新增todo
-    static async addTodo(ctx, next) {
-        let todo = Object.assign({}, ctx.request.body, {
-            userId: ctx.session.userInfo._id
-        })
+    // 查询所有todo
+    static async getAllTodoList(ctx, next) {
         try {
-            let doc = await Todo.create(todo);
+            let doc = await Todo.find({}).sort({ update_at: -1 });
             if (doc) {
                 ctx.body = {
-                    code: 10000,
-                    data: '添加成功！',
+                    code: 200,
+                    data: doc,
                     msg: 'success'
                 }
             }
         } catch (err) {
             ctx.body = {
-                code: 9999,
+                code: 999,
+                data: null,
+                msg: err
+            }
+        }
+    }
+
+    // 新增todo
+    static async addTodo(ctx, next) {
+        let todo = Object.assign({}, ctx.request.body, {
+            userId: ctx.state.userInfo._id,
+            status: 1
+        })
+        try {
+            let doc = await Todo.create(todo);
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: '添加成功！',
+                    msg: '添加成功！'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
                 data: '添加失败',
                 msg: err
             }
         }
     }
 
-    // 切换完成状态
+    // 切换todo状态
     static async changeStatus(ctx, next) {
-        let userId = ctx.session.userInfo._id;
+        let _id = ctx.request.body._id;
+        let status = ctx.request.body.status;
         try {
             let doc = await Todo.findOneAndUpdate({
-                userId: userId
+                _id: _id
             }, {
                     $set: {
-                        status: ctx.request.body.status,
+                        status: status,
                     }
                 }, {
                     new: true
                 })
             if (doc) {
                 ctx.body = {
-                    code: 10000,
+                    code: 200,
                     data: '更新成功',
                     msg: '更新成功'
                 }
             }
         } catch (err) {
             ctx.body = {
-                code: 9999,
+                code: 200,
                 data: '更新失败',
                 msg: err
             }
@@ -87,7 +110,7 @@ class TodoController {
 
     // 更新todo
     static async updateTodo(ctx, next) {
-        let userId = ctx.session.userInfo._id;
+        let userId = ctx.state.userInfo._id;
         try {
             let doc = await Todo.findOneAndUpdate({
                 userId: userId
@@ -103,14 +126,14 @@ class TodoController {
                 })
             if (doc) {
                 ctx.body = {
-                    code: 10000,
+                    code: 200,
                     data: '更新成功',
                     msg: '更新成功'
                 }
             }
         } catch (err) {
             ctx.body = {
-                code: 9999,
+                code: 200,
                 data: '添加失败',
                 msg: err
             }
@@ -120,7 +143,24 @@ class TodoController {
     // 删除todo
     static async deleteTodo(ctx, next) {
         let id = ctx.request.query.id;
-
+        try {
+            let doc = await Todo.deleteOne({
+                _id: id
+            })
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: '删除成功',
+                    msg: '删除成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '删除失败',
+                msg: err
+            }
+        }
     }
 }
 

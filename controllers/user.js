@@ -1,10 +1,10 @@
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
 const User = require('../database/user.model');
-
+const config = require('../config');
 
 
 class UserController {
-
   static async login(ctx, next) {
     let password = ctx.request.body.password;
     let username = ctx.request.body.username;
@@ -15,29 +15,36 @@ class UserController {
       if (!doc) {
         ctx.body = {
           result: false,
-          err: '用户名不存在'
+          msg: '用户名不存在'
         }
       } else if (doc.password !== password) {
         ctx.body = {
           result: false,
-          err: '密码错误'
+          msg: '密码错误'
         }
       } else {
-        ctx.session.userInfo = doc;
+        const userInfo = {
+          username: doc.username,
+          _id: doc._id,
+        }
+        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60*60 })  //token签名 有效期为1小时
         ctx.body = {
           result: true,
-          data: doc
+          token: token,
+          msg: '登陆成功'
         }
       }
     } catch (err) {
       ctx.body = {
         result: false,
-        err: err,
+        token: null,
+        msg: '登录失败'
       }
     }
-    // await next();
+    await next();
   }
 
+  // 注册
   static async register(ctx, next) {
     let userInfo = ctx.request.body;
     Object.assign(userInfo, {
@@ -50,36 +57,33 @@ class UserController {
       if (doc) {
         ctx.body = {
           result: false,
-          errorMessage: '用户名已存在'
+          msg: '用户名已存在！'
         }
       } else {
         await User.create(userInfo);
         ctx.body = {
           result: true,
-          data: '注册成功'
+          msg: '注册成功！'
         }
       }
     } catch (err) {
       ctx.body = {
         result: false,
-        errorMessage: err
+        msg: err
       }
     }
-    // await next();
+    await next();
   }
 
+  // 获取用户信息
   static async getUserInfo(ctx, next) {
-    if (ctx.session.userInfo) {
-      ctx.body = {
-        result: true,
-        data: ctx.session.userInfo
-      }
-    } else {
-      ctx.body = {
-        result: false,
-        err: '请登录'
-      }
+    ctx.body = {
+      result: true,
+      code: 200,
+      data: ctx.state.userInfo,
+      msg: '用户信息获取成功'
     }
+    await next();
   }
 
   static async uploadImg() {
@@ -128,14 +132,7 @@ class UserController {
     }
   }
 
-  static async logout(ctx, next) {
-    ctx.session.maxAge = 0;
-    ctx.body = {
-      result: true,
-      data: '退出成功'
-    }
-  }
-
+  // 删除用户
   static async delete(ctx) {
     ctx.body = {
       result: true,
