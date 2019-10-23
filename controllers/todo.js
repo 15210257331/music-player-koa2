@@ -53,6 +53,30 @@ class TodoController {
         }
     }
 
+    // 查询项目下的任务列表
+    static async getTaskListByProjectId(ctx, next) {
+        let projectId = ctx.request.query.id;
+        try {
+            let doc = await Todo.find({
+                projectId: projectId
+            }).sort({ update_at: -1 });
+            console.log(doc);
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: 'success'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: null,
+                msg: err
+            }
+        }
+    }
+
     // 新增todo
     static async addTodo(ctx, next) {
         let todo = Object.assign({}, ctx.request.body, {

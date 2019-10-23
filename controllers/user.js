@@ -14,12 +14,12 @@ class UserController {
       })
       if (!doc) {
         ctx.body = {
-          result: false,
+          code: 999,
           msg: '用户名不存在'
         }
       } else if (doc.password !== password) {
         ctx.body = {
-          result: false,
+          code: 999,
           msg: '密码错误'
         }
       } else {
@@ -29,14 +29,14 @@ class UserController {
         }
         const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60*60 })  //token签名 有效期为1小时
         ctx.body = {
-          result: true,
+          code: 200,
           token: token,
           msg: '登陆成功'
         }
       }
     } catch (err) {
       ctx.body = {
-        result: false,
+        code: 999,
         token: null,
         msg: '登录失败'
       }

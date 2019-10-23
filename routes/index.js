@@ -4,6 +4,7 @@ const ViewController = require('../controllers/view')
 const HeroController = require('../controllers/hero');
 const ArticleController = require('../controllers/article');
 const TodoController = require('../controllers/todo');
+const ProjectController = require('../controllers/project');
 
 const router = new Router({
     prefix: '/api'
@@ -32,9 +33,22 @@ router.get('/user/info', UserController.getUserInfo);
 // 修改用户信息
 router.patch('/user/info', UserController.uploadImg, UserController.updateUserInfo);
 
+/**
+ * project api
+ */
+// project 列表
+router.get('/project/list', ProjectController.getProjects);
+// 新增 project 
+router.post('/project/add', ProjectController.newProject);
+// 删除project
+router.get('/project/delete', ProjectController.deleteProject);
+// 获取project下的所有task
+router.get('/project/task/list', ProjectController.deleteProject);
+
+
 
 // todo
-router.post('/todo/list', TodoController.getTodoList);
+router.get('/task/list', TodoController.getTaskListByProjectId);
 router.get('/todo/list/all', TodoController.getAllTodoList);
 // 添加todo
 router.post('/todo/add', TodoController.addTodo);
@@ -43,6 +57,12 @@ router.post('/todo/update', TodoController.updateTodo);
 router.get('/todo/delete', TodoController.deleteTodo);
 // 修改todo 状态
 router.post('/todo/status', TodoController.changeStatus);
+
+
+
+
+
+
 
 //article
 router.post('/article/add', ArticleController.addArticle);
