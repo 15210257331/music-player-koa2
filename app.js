@@ -1,14 +1,17 @@
-const Koa = require('koa')
+const Koa = require('koa');
+const path = require('path');
 const app = new Koa()
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const static = require('koa-static');
+const cors = require('koa2-cors');
+
 const timeLog = require('./middleware/timeLog');
 const checkToken = require('./middleware/checkToken');
-const cors = require('koa2-cors');
-const routerConfig = require('./routes/index');
+const helper = require('./utils/helper');
+
 
 // error handler
 onerror(app)
@@ -30,7 +33,7 @@ app.use(timeLog());
 app.use(checkToken());
 
 // 注册路由
-app.use(routerConfig.routes(), routerConfig.allowedMethods());
+helper.walk(path.join(__dirname, 'routes'), app);
 
 // error-handling
 app.on('error', (err, ctx) => {

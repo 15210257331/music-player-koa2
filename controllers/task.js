@@ -1,66 +1,13 @@
-const Todo = require("../database/todo.model");
+const Task = require("../database/task.model");
 
 
-class TodoController {
-
-    // 查询todo列表分页
-    static async getTodoList(ctx, next) {
-        let curPage = parseInt(ctx.request.query.curPage);
-        let pageSize = parseInt(ctx.request.query.pageSize);
-        try {
-            let doc = await Todo.find({})
-                .skip((curPage - 1) * pageSize)
-                .limit(pageSize)
-                .sort({ update_at: -1 });
-            let total = await Todo.countDocuments();
-            if (doc) {
-                ctx.body = {
-                    result: true,
-                    code: 200,
-                    data: {
-                        list: doc,
-                        total: total
-                    },
-                    msg: 'success'
-                }
-            }
-        } catch (err) {
-            ctx.body = {
-                code: 9999,
-                data: null,
-                msg: err
-            }
-        }
-    }
-
-    // 查询所有todo
-    static async getAllTodoList(ctx, next) {
-        try {
-            let doc = await Todo.find({}).sort({ update_at: -1 });
-            if (doc) {
-                ctx.body = {
-                    code: 200,
-                    data: doc,
-                    msg: 'success'
-                }
-            }
-        } catch (err) {
-            ctx.body = {
-                code: 999,
-                data: null,
-                msg: err
-            }
-        }
-    }
+class TaskController {
 
     // 查询项目下的任务列表
-    static async getTaskListByProjectId(ctx, next) {
+    static async getTaskList(ctx, next) {
         let projectId = ctx.request.query.id;
         try {
-            let doc = await Todo.find({
-                projectId: projectId
-            }).sort({ update_at: -1 });
-            console.log(doc);
+            let doc = await Task.find({projectId: projectId}).sort({ update_at: -1 });
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -77,14 +24,11 @@ class TodoController {
         }
     }
 
-    // 新增todo
-    static async addTodo(ctx, next) {
-        let todo = Object.assign({}, ctx.request.body, {
-            userId: ctx.state.userInfo._id,
-            status: 1
-        })
+    // 新增任务
+    static async addTask(ctx, next) {
+        let task = ctx.request.body;
         try {
-            let doc = await Todo.create(todo);
+            let doc = await Task.create(task);
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -101,13 +45,13 @@ class TodoController {
         }
     }
 
-    // 切换todo状态
-    static async changeStatus(ctx, next) {
-        let _id = ctx.request.body._id;
+    // 切换任务状态
+    static async updateTaskStatus(ctx, next) {
+        let taskId = ctx.request.body._id;
         let status = ctx.request.body.status;
         try {
-            let doc = await Todo.findOneAndUpdate({
-                _id: _id
+            let doc = await Task.findOneAndUpdate({
+                _id: taskId
             }, {
                     $set: {
                         status: status,
@@ -164,13 +108,11 @@ class TodoController {
         }
     }
 
-    // 删除todo
-    static async deleteTodo(ctx, next) {
-        let id = ctx.request.query.id;
+    // 删除任务
+    static async deleteTask(ctx, next) {
+        let taskId = ctx.request.query.id;
         try {
-            let doc = await Todo.deleteOne({
-                _id: id
-            })
+            let doc = await Task.deleteOne({_id: taskId})
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -188,4 +130,4 @@ class TodoController {
     }
 }
 
-module.exports = TodoController;
+module.exports = TaskController;

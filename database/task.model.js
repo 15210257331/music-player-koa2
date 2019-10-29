@@ -1,6 +1,6 @@
 const mongoose = require('./db');
 
-const todoSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({
     name : String,
     content : String,
     deadline: Number,  // 时间戳  13位以毫秒位单位
@@ -10,4 +10,4 @@ const todoSchema = new mongoose.Schema({
     tag: String
 });
 
-module.exports = mongoose.model('todos',todoSchema);
+module.exports = mongoose.model('tasks',taskSchema);
