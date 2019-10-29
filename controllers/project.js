@@ -1,4 +1,4 @@
-const Project = require("../database/project.model");
+const Project = require("../models/project.model");
 
 
 class ProjectController {

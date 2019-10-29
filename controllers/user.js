@@ -1,7 +1,7 @@
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
-const User = require('../database/user.model');
-const config = require('../config');
+const User = require('../models/user.model');
+const config = require('../utils/config');
 
 
 class UserController {

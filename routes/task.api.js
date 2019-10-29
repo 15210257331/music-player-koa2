@@ -13,7 +13,7 @@ router.get('/task/list', TaskController.getTaskList);
 // 添加task
 router.post('/task/add', TaskController.addTask);
 // 切换task状态
-router.post('/task/updateStatus', TaskController.updateTaskStatus);
+router.post('/task/status', TaskController.updateTaskStatus);
 // 删除delete
 router.get('/task/delete', TaskController.deleteTask);
 

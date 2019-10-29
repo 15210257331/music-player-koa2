@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken')
 const util = require('util')
 const verify = util.promisify(jwt.verify)
-const config = require('../config');
-const User = require('../database/user.model');
+const config = require('../utils/config');
+const User = require('../models/user.model');
+
 /**
- * 验证token
+ * 验证token中间件
  */
 function checkToken() {
     return async function (ctx, next) {

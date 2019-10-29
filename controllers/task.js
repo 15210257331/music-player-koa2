@@ -1,4 +1,4 @@
-const Task = require("../database/task.model");
+const Task = require("../models/task.model");
 
 
 class TaskController {
