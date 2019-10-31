@@ -10,6 +10,8 @@ const router = new Router({
  */
 // project 列表
 router.get('/project/list', ProjectController.getProjects);
+// project 详情
+router.get('/project/detail', ProjectController.getProjectDetail);
 // 新增 project 
 router.post('/project/add', ProjectController.newProject);
 // 删除project

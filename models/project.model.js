@@ -3,7 +3,7 @@ const mongoose = require('../utils/db');
 const projectSchema = new mongoose.Schema({
     name : String,
     content : String,
-    mission: Array,
+    task: Array,
     userId: String
 });
 

@@ -1,10 +1,10 @@
-const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const config = require('../utils/config');
 
 
 class UserController {
+
   static async login(ctx, next) {
     let password = ctx.request.body.password;
     let username = ctx.request.body.username;
@@ -27,7 +27,7 @@ class UserController {
           username: doc.username,
           _id: doc._id,
         }
-        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60*60 })  //token签名 有效期为1小时
+        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60 * 60 })  //token签名 有效期为1小时
         ctx.body = {
           code: 200,
           token: token,
@@ -86,47 +86,40 @@ class UserController {
     await next();
   }
 
-  static async uploadImg() {
-    const storageZip = multer.diskStorage({
-      destination: function (req, file, cb) {
-        let avatarPath = path.resolve(__dirname, '../public/images/avatar'); //会对../进行解析
-        cb(null, avatarPath); //文件存储路径
-      },
-      filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + '.png'); //对文件重新命名，防止文件名冲突
-      }
-    });
-
-    return multer({
-      storage: storageZip
-    });
+  static async uploadImg(ctx, next) {
+    const avatarUrl = `http://127.0.0.1:4000/images/avatar/${ctx.req.file.filename}`;
+    ctx.body = {
+      code: 200,
+      data: avatarUrl,
+      msg: '图片上传成功'
+    }
   }
 
-  // 先将图片上传到服务器返回图片的地址, 将图片的地址传到后台
   static async updateUserInfo(ctx, next) {
-    let newAvatar = `http://39.104.147.212:3000/images/avatar${ctx.request.body.file.filename}`;
+    let newAvatar = ctx.request.body.avatar;
     let newUsername = ctx.request.body.username;
-    let newNickname = ctx.request.body.newNickname;
+    let newNickname = ctx.request.body.nickname;
+    let newEmail = ctx.request.body.email;
     try {
       let doc = await User.findOneAndUpdate({
-        _id: ctx.session.userInfo._id
+        _id: ctx.state.userInfo._id
       }, {
           $set: {
             avatar: newAvatar,
             username: newUsername,
-            nickname: newNickname
+            nickname: newNickname,
+            email: newEmail
           }
         }, {
           new: true
         })
-      ctx.session.userInfo = doc;
       ctx.body = {
-        result: true,
+        code: 200,
         data: doc
       }
     } catch (err) {
       ctx.body = {
-        result: false,
+        code: 999,
         err: err
       }
     }

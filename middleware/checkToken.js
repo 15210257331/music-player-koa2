@@ -13,7 +13,6 @@ function checkToken() {
             const token = ctx.header.authorization;
             if (!token) {
                 ctx.body = {
-                    reuslt: false,
                     code: 301,
                     msg: 'token不存在！'
                 }
@@ -25,7 +24,7 @@ function checkToken() {
                     })
                     await next();
                 } catch (err) {
-                    console.log(err);
+                    // console.log(err);
                     ctx.body = {
                         code: 302,
                         msg: 'token已过期！'

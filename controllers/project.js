@@ -1,17 +1,44 @@
 const Project = require("../models/project.model");
-
+const Task = require("../models/task.model");
 
 class ProjectController {
 
     // 查询所有项目
     static async getProjects(ctx, next) {
+        let userId = ctx.state.userInfo._id;
         try {
-            let doc = await Project.find({}).sort({ update_at: -1 });
+            let doc = await Project.find({ userId: userId }).sort({ update_at: -1 });
             if (doc) {
                 ctx.body = {
                     code: 200,
                     data: doc,
                     msg: 'success'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: null,
+                msg: err
+            }
+        }
+    }
+
+    // 查询项目详情
+    static async getProjectDetail(ctx, next) {
+        let projectId = ctx.request.query._id;
+        try {
+            let project = await Project.find({ _id: projectId });
+            let task = await Task.find({ projectId: projectId });
+            if (project) {
+                if (task) {
+                    let doc = project[0];
+                    doc.task = task;
+                    ctx.body = {
+                        code: 200,
+                        data: doc,
+                        msg: 'success'
+                    }
                 }
             }
         } catch (err) {
