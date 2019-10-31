@@ -1,13 +1,12 @@
 const Router = require('koa-router')
 const ProjectController = require('../controllers/project');
+const config = require('../utils/config');
 
 const router = new Router({
-    prefix: '/api'
+    prefix: config.prefix
 })
 
-/**
- * project api
- */
+
 // project 列表
 router.get('/project/list', ProjectController.getProjects);
 // project 详情

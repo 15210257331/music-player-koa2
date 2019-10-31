@@ -1,15 +1,16 @@
 const path = require('path');
 
-module.exports = {
-    port: '3001',
-    secret: 'secret',
-    publicDir: path.resolve(__dirname, './public'),
-    logPath: path.resolve(__dirname, './logs/koa-template.log'),
+ const config = {
+    port: '3001', // 服务端口
+    secret: 'secret', // token 秘钥
+    prefix: '/api', // 接口前缀
     mongoDB: {
-        database: 'mall',
+        database: 'todo',
         username: 'root',
         password: 'root',
-        host: '127.0.0.1',
+        host: 'localhost',
         port: 27017
     }
 }
+
+module.exports = config;

@@ -2,9 +2,10 @@ const Router = require('koa-router')
 const UserController = require('../controllers/user')
 const multer = require('koa-multer');
 const path = require('path');
+const config = require('../utils/config');
 
 const router = new Router({
-    prefix: '/api'
+    prefix: config.prefix
 })
 
 const storageZip = multer.diskStorage({
@@ -20,9 +21,7 @@ const storageZip = multer.diskStorage({
 
 var upload = multer({ storage: storageZip });
 
-/**
- * 用户
- */
+
 // 用户注册
 router.post('/user/register', UserController.register);
 // 用户登录

@@ -3,11 +3,10 @@ const Task = require("../models/task.model");
 
 class TaskController {
 
-    // 查询项目下的任务列表
-    static async getTaskList(ctx, next) {
-        let projectId = ctx.request.query.id;
+    // 查询所有的task
+    static async getAllTask(ctx, next) {
         try {
-            let doc = await Task.find({projectId: projectId}).sort({ update_at: -1 });
+            let doc = await Task.find({}).sort({ update_at: -1 });
             if (doc) {
                 ctx.body = {
                     code: 200,

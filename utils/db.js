@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
-const url = "mongodb://localhost:27017/todo"; // 连接today数据库
+const config = require('./config');
 
+const url = `mongodb://${config.mongoDB.host}:${config.mongoDB.port}/${config.mongoDB.database}`; // 连接todo数据库
+
+console.log(url);
 
 //连接数据库
 mongoose.connect(url,{useNewUrlParser:true});

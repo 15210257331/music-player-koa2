@@ -1,14 +1,11 @@
 const Router = require('koa-router')
 const ViewController = require('../controllers/view')
-
+const config = require('../utils/config');
 
 const router = new Router({
-    prefix: '/api'
+    prefix: config.prefix
 })
 
-/**
- * view
- */
 // index
 router.get('/index', ViewController.index);
 // doc
