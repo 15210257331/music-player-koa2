@@ -31,14 +31,14 @@ class TaskController {
             if (doc) {
                 ctx.body = {
                     code: 200,
-                    data: '添加成功！',
-                    msg: '添加成功！'
+                    data: doc,
+                    msg: '任务添加成功！'
                 }
             }
         } catch (err) {
             ctx.body = {
                 code: 999,
-                data: '添加失败',
+                data: '任务添加失败',
                 msg: err
             }
         }
@@ -115,8 +115,8 @@ class TaskController {
             if (doc) {
                 ctx.body = {
                     code: 200,
-                    data: '删除成功',
-                    msg: '删除成功'
+                    data: taskId,
+                    msg: '任务删除成功'
                 }
             }
         } catch (err) {

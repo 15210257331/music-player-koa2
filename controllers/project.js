@@ -31,14 +31,12 @@ class ProjectController {
             let project = await Project.find({ _id: projectId });
             let task = await Task.find({ projectId: projectId });
             if (project) {
-                if (task) {
-                    let doc = project[0];
-                    doc.task = task;
-                    ctx.body = {
-                        code: 200,
-                        data: doc,
-                        msg: 'success'
-                    }
+                let doc = project[0];
+                doc.task = task;
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '查询成功！'
                 }
             }
         } catch (err) {
@@ -60,14 +58,14 @@ class ProjectController {
             if (doc) {
                 ctx.body = {
                     code: 200,
-                    data: '添加成功！',
-                    msg: '添加成功！'
+                    data: doc,
+                    msg: '添加项目成功！'
                 }
             }
         } catch (err) {
             ctx.body = {
                 code: 999,
-                data: '添加失败',
+                data: '添加项目失败',
                 msg: err
             }
         }
@@ -77,14 +75,13 @@ class ProjectController {
     static async deleteProject(ctx, next) {
         let id = ctx.request.query.id;
         try {
-            let doc = await Project.deleteOne({
-                _id: id
-            })
-            if (doc) {
+            let doc = await Project.deleteOne({_id: id});
+            let data = await Task.deleteMany({projectId: id});
+            if (doc.ok === 1 && data.ok === 1) {
                 ctx.body = {
                     code: 200,
-                    data: '删除成功',
-                    msg: '删除成功'
+                    data: id,
+                    msg: '项目删除成功'
                 }
             }
         } catch (err) {

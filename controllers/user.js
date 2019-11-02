@@ -27,7 +27,7 @@ class UserController {
           username: doc.username,
           _id: doc._id,
         }
-        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60 * 60 })  //token签名 有效期为1小时
+        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60 * 60 * 24 * 7 })  //token签名 有效期为7tina
         ctx.body = {
           code: 200,
           token: token,
