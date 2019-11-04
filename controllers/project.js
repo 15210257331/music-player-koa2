@@ -3,11 +3,11 @@ const Task = require("../models/task.model");
 
 class ProjectController {
 
-    // 查询所有项目
+    // 查询所有项目 (当前登录用户参与的项目)
     static async getProjects(ctx, next) {
         let userId = ctx.state.userInfo._id;
         try {
-            let doc = await Project.find({ userId: userId }).sort({ update_at: -1 });
+            let doc = await Project.find().sort({ update_at: -1 });
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -51,7 +51,9 @@ class ProjectController {
     // 新建项目
     static async newProject(ctx, next) {
         let project = Object.assign({}, ctx.request.body, {
-            userId: ctx.state.userInfo._id,
+            creater: ctx.state.userInfo,
+            createDate: new Date(),
+            task: [],
         })
         try {
             let doc = await Project.create(project);

@@ -47,8 +47,9 @@ class UserController {
   // 注册
   static async register(ctx, next) {
     let userInfo = ctx.request.body;
+    const defaultAvatarUrl = `http://127.0.0.1:4000/images/avatar/avatar-default.png`;
     Object.assign(userInfo, {
-      avatar: avatarUrl
+      avatar: defaultAvatarUrl
     });
     try {
       let doc = await User.findOne({
@@ -56,19 +57,19 @@ class UserController {
       })
       if (doc) {
         ctx.body = {
-          result: false,
+          code: 999,
           msg: '用户名已存在！'
         }
       } else {
         await User.create(userInfo);
         ctx.body = {
-          result: true,
+          code: 200,
           msg: '注册成功！'
         }
       }
     } catch (err) {
       ctx.body = {
-        result: false,
+        code: 999,
         msg: err
       }
     }
@@ -121,6 +122,25 @@ class UserController {
       ctx.body = {
         code: 999,
         err: err
+      }
+    }
+  }
+
+  // 获取成员列表
+  static async memberList(ctx, next) {
+    try {
+      let doc = await User.find({}).sort({ update_at: -1 });
+      if (doc) {
+        ctx.body = {
+          code: 200,
+          data: doc,
+          msg: '成员列表获取成功！'
+        }
+      }
+    } catch (err) {
+      ctx.body = {
+        code: false,
+        msg: err
       }
     }
   }

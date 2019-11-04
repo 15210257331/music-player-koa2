@@ -6,9 +6,11 @@ const userSchema = new mongoose.Schema({
     password : String,
     nickname: String,
     email: String,
+    phoneNumber: Number,
     avatar : String,
     introduction: String,
-    sex: Number
+    sex: Number,
+    role: Array, // 角色
 });
 
 //第一个参数代表数据库对应的表的名字，后边如果没有s的话会自动加上s，而且首字母会变成小写，如果生成Schema实例的时候指定了表的名字就用指定的名字

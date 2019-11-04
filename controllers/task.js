@@ -25,9 +25,11 @@ class TaskController {
 
     // 新增任务
     static async addTask(ctx, next) {
-        let task = ctx.request.body;
+        const data = Object.assign({}, ctx.request.body, {
+            principal: ctx.state.userInfo
+        })
         try {
-            let doc = await Task.create(task);
+            let doc = await Task.create(data);
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -111,7 +113,7 @@ class TaskController {
     static async deleteTask(ctx, next) {
         let taskId = ctx.request.query.id;
         try {
-            let doc = await Task.deleteOne({_id: taskId})
+            let doc = await Task.deleteOne({ _id: taskId })
             if (doc) {
                 ctx.body = {
                     code: 200,

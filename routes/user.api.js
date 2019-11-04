@@ -35,4 +35,6 @@ router.post('/user/info/update', UserController.updateUserInfo);
 // 上传图片
 router.post('/user/uploadImg', upload.single('avatar'), UserController.uploadImg);
 
+router.get('/user/member/list', UserController.memberList);
+
 module.exports = router;
