@@ -101,6 +101,7 @@ class UserController {
     let newUsername = ctx.request.body.username;
     let newNickname = ctx.request.body.nickname;
     let newEmail = ctx.request.body.email;
+    let newIntroduction = ctx.request.body.introduction;
     try {
       let doc = await User.findOneAndUpdate({
         _id: ctx.state.userInfo._id
@@ -109,7 +110,8 @@ class UserController {
             avatar: newAvatar,
             username: newUsername,
             nickname: newNickname,
-            email: newEmail
+            email: newEmail,
+            introduction: newIntroduction
           }
         }, {
           new: true
