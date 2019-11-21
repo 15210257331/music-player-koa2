@@ -6,7 +6,7 @@ const router = new Router({
     prefix: config.prefix
 })
 
-// 所有task列表
+// 所有任务列表
 router.get('/task/list/all', TaskController.getAllTask);
 // 添加task
 router.post('/task/add', TaskController.addTask);
@@ -14,5 +14,11 @@ router.post('/task/add', TaskController.addTask);
 router.post('/task/status', TaskController.updateTaskStatus);
 // 删除delete
 router.get('/task/delete', TaskController.deleteTask);
+// 添加任务评论
+router.post('/task/comment/add', TaskController.addTaskComment);
+// 获取任务评论
+router.get('/task/comment', TaskController.getTaskComment);
+
+
 
 module.exports = router

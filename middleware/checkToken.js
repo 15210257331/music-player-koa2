@@ -9,7 +9,7 @@ const User = require('../models/user.model');
  */
 function checkToken() {
     return async function (ctx, next) {
-        if (ctx.request.url !== '/api/user/login' && ctx.request.url !== '/api/user/register') {
+        if (ctx.request.url !== '/api/user/login' && ctx.request.url !== '/api/user/register' && ctx.request.url !== '/api/index') {
             const token = ctx.header.authorization;
             if (!token) {
                 ctx.body = {

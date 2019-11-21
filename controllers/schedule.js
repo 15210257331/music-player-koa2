@@ -1,10 +1,13 @@
 const Schedule = require("../models/schedule.model");
-
+const events = require('events');
+// const life = new events.EventEmitter();
 
 class ScheduleController {
 
     // 查询所有日程
     static async getAllSchedule(ctx, next) {
+        let userInfo = ctx.state.userInfo;
+        // 查询当前用户参加的日程
         try {
             let doc = await Schedule.find({}).sort({ update_at: -1 });
             if (doc) {
@@ -25,12 +28,16 @@ class ScheduleController {
 
     // 新建日程
     static async addSchedule(ctx, next) {
+        let participant = ctx.request.body.participant;
+        participant.unshift(ctx.state.userInfo);
         const data = Object.assign({}, ctx.request.body, {
-            organizer: ctx.state.userInfo
+            organizer: ctx.state.userInfo,
+            participant: participant
         })
         try {
             let doc = await Schedule.create(data);
             if (doc) {
+                // life.emit('schedule', 'xx');
                 ctx.body = {
                     code: 200,
                     data: doc,

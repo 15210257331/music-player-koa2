@@ -1,9 +1,10 @@
 const Task = require("../models/task.model");
+const Comment = require("../models/comment.model");
 
 
 class TaskController {
 
-    // 查询所有的task
+    // 查询所有的任务 用于统计
     static async getAllTask(ctx, next) {
         try {
             let doc = await Task.find({}).sort({ update_at: -1 });
@@ -77,7 +78,7 @@ class TaskController {
     }
 
 
-    // 更新todo
+    // 更新任务
     static async updateTodo(ctx, next) {
         let userId = ctx.state.userInfo._id;
         try {
@@ -125,6 +126,52 @@ class TaskController {
             ctx.body = {
                 code: 999,
                 data: '删除失败',
+                msg: err
+            }
+        }
+    }
+
+    // 为任务添加评论
+    static async addTaskComment(ctx, next) {
+        const data = Object.assign({}, ctx.request.body, {
+            commentTime: new Date(),
+            commentAuthor: ctx.state.userInfo
+        })
+        try {
+            let doc = await Comment.create(data)
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '添加评论成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '添加评论失败',
+                msg: err
+            }
+        }
+    }
+
+    // 获取任务添评论
+    static async getTaskComment(ctx, next) {
+        const taskId = ctx.request.query.taskId;
+        console.log(taskId);
+        try {
+            let doc = await Comment.find({taskId: taskId})
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '获取评论成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '获取评论失败',
                 msg: err
             }
         }
