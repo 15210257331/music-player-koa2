@@ -4,26 +4,6 @@ const Comment = require("../models/comment.model");
 
 class TaskController {
 
-    // 查询所有的任务 用于统计
-    static async getAllTask(ctx, next) {
-        try {
-            let doc = await Task.find({}).sort({ update_at: -1 });
-            if (doc) {
-                ctx.body = {
-                    code: 200,
-                    data: doc,
-                    msg: 'success'
-                }
-            }
-        } catch (err) {
-            ctx.body = {
-                code: 999,
-                data: null,
-                msg: err
-            }
-        }
-    }
-
     // 新增任务
     static async addTask(ctx, next) {
         const data = Object.assign({}, ctx.request.body, {
@@ -158,7 +138,7 @@ class TaskController {
     // 获取任务添评论
     static async getTaskComment(ctx, next) {
         const taskId = ctx.request.query.taskId;
-        console.log(taskId);
+      //  console.log(taskId);
         try {
             let doc = await Comment.find({taskId: taskId})
             if (doc) {

@@ -6,8 +6,6 @@ const router = new Router({
     prefix: config.prefix
 })
 
-// 所有任务列表
-router.get('/task/list/all', TaskController.getAllTask);
 // 添加task
 router.post('/task/add', TaskController.addTask);
 // 切换task状态
