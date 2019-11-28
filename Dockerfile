@@ -6,6 +6,6 @@ RUN mkdir -p /home/project
 # 设置容器的工作目录为该目录
 WORKDIR /home/project 
 # 向外提供3000端口
-EXPOSE 3000
+EXPOSE 4000
 # 容器创建完成后执行的命令
-CMD  npm run start
+CMD  ["npm" "run" "start"]
