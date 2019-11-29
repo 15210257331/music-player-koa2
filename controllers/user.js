@@ -47,7 +47,7 @@ class UserController {
   // 注册
   static async register(ctx, next) {
     let userInfo = ctx.request.body;
-    const defaultAvatarUrl = `http://127.0.0.1:4000/images/avatar/avatar-default.png`;
+    const defaultAvatarUrl = `${config.host}:${config.port}/images/avatar/avatar-default.png`;
     Object.assign(userInfo, {
       avatar: defaultAvatarUrl
     });
@@ -88,7 +88,7 @@ class UserController {
   }
 
   static async uploadImg(ctx, next) {
-    const avatarUrl = `http://127.0.0.1:4000/images/avatar/${ctx.req.file.filename}`;
+    const avatarUrl = `${config.host}:${config.port}/images/avatar/${ctx.req.file.filename}`;
     ctx.body = {
       code: 200,
       data: avatarUrl,

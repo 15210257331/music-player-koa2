@@ -10,7 +10,8 @@ const path = require('path');
         password: 'test',
         host: '182.254.178.211',
         port: 27017
-    }
+    },
+    host: 'http://182.254.178.211'
 }
 
 module.exports = config;
