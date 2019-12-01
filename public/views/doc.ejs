@@ -5,38 +5,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>文档</title>
     <style>
-        *{
+        * {
             margin: 0;
-            padding:0;
+            padding: 0;
         }
-        .container {
-            width: 700px;
-            margin: 40px auto;
-        }
+
         h2 {
-            color:darkturquoise;
+            color: darkturquoise;
             font-size: 30px;
+            text-align: center;
         }
-        li {
-            list-style: none;
-            margin: 10px 10px 20px 0;
+
+        h2 a {
+            font-size: 14px;
+            color: darkturquoise;
+        }
+
+        table {
+            width: 95%;
+            margin: 10px auto;
+            background-color: white;
+            border-radius: 4px;
+            border: 1px solid #eeeeee;
+        }
+
+        tbody tr:hover {
+            background-color: honeydew;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            text-align: left;
+            height: 45px;
+            padding: 8px 20px;
+            box-sizing: border-box;
+            line-height: 29px;
+            overflow: hidden;
+            color: #909399;
+            border: 1px solid rgb(235, 238, 245);
         }
     </style>
 </head>
 
 <body>
-    <ul class="container">
-        <h2><%= title%></h2>
+    <h2>
+        <%= title%>
+        <a href="/api/index">返回</a>
+    </h2>
+    <table>
+        <tr>
+            <th>URL</th>
+            <th>说明</th>
+            <th>请求方式</th>
+            <th>参数</th>
+        </tr>
         <%for(var i=0;i<list.length;i++){%>
-        <li>
-            <p>url: <%=list[i].url%></p>
-            <p>请求方式: <%=list[i].type%></p>
-            <p>参数: <%=list[i].params%></p>
-            <p>说明:<%=list[i].des%></p> 
-        </li>
+        <tr>
+            <td><%=list[i].url%></td>
+            <td><%=list[i].type%></td>
+            <td><%=list[i].params%></td>
+            <td><%=list[i].des%></td>
+        </tr>
         <%}%>
-   </ul>
+       
+   </table>
 </body>
 </html>

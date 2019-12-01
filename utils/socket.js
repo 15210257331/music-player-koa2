@@ -22,7 +22,11 @@ socketio.getSocketio = function (server) {
                     socket.emit("remind", { data: `日程${item.name}于${new Date(item.startTime).toLocaleString()}开始` }); // 向该客户端发送getMsg事件
                 }
             })
-        }, 1000)
+        }, 1000);
+
+
+        socket.emit('getMsg', '我是来自socket的数据');
+
     })
 };
 

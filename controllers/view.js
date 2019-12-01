@@ -1,7 +1,7 @@
 class ViewController {
     static async index(ctx, next) {
         await ctx.render('index', {
-            title: '当你看到这个页面的时候说明服务已经跑起来了',
+            title: 'koa2 版本简易项目管理api',
             subTitle: 'koa2版本QQ音乐api',
             guide: '查看文档'
         })
@@ -19,14 +19,20 @@ class ViewController {
                 },
                 {
                     url: 'api/user/login',
+                    type: 'POST',
+                    params: '账号和密码',
                     des: '用户登录'
                 },
                 {
                     url: 'api/user/logout',
+                    type: 'POST',
+                    params: '无',
                     des: '登出'
                 },
                 {
                     url: 'api/user/info',
+                    type: 'POST',
+                    params: '无',
                     des: '获取用户信息'
                 },
             ]
