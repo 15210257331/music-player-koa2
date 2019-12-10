@@ -12,7 +12,6 @@ const notCheckUrls = ['/api/user/login', '/api/user/register','/api/index', '/ap
 function checkToken() {
     return async function (ctx, next) {
         if (notCheckUrls.indexOf(ctx.request.url) < 0) {
-            console.log(ctx.request.url);
             const token = ctx.header.authorization;
             if (!token) {
                 ctx.body = {

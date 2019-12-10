@@ -46,6 +46,11 @@ class ProjectController {
             const members = await User.find({ "_id": { $in: project.member } });
             const creater = await User.findOne({ "_id": project.creater });
             const tasks = await Task.find({ projectId: projectId });
+            const principalPromise = tasks.map(item => User.findOne({ "_id": item.principal }));
+            const principal = await Promise.all(principalPromise);
+            tasks.map((item,i) => {
+                item.principal = principal[i]
+            })
             const res = {
                 name: project.name,
                 content: project.content,

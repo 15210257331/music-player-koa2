@@ -1,13 +1,14 @@
 const Task = require("../models/task.model");
 const Comment = require("../models/comment.model");
-
+const helper = require('../utils/helper');
 
 class TaskController {
 
     // 新增任务
     static async addTask(ctx, next) {
         const data = Object.assign({}, ctx.request.body, {
-            principal: ctx.state.userInfo
+            principal: ctx.state.userInfo._id,
+            number: helper.generate8Code(6),
         })
         try {
             let doc = await Task.create(data);
@@ -138,7 +139,6 @@ class TaskController {
     // 获取任务添评论
     static async getTaskComment(ctx, next) {
         const taskId = ctx.request.query.taskId;
-      //  console.log(taskId);
         try {
             let doc = await Comment.find({taskId: taskId})
             if (doc) {

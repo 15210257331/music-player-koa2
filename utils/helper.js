@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const uuidv1 = require('uuid/v1');
 // 读取路由文件注册路由
 /**
  * 
@@ -38,5 +39,13 @@ var walk1 = function (dirPath, apiUrl) {
   })
 }
 
-// walk(path.join(__dirname, 'routes'), '/api');
-module.exports = { walk, walk1 };
+var generate8Code = function (num) {
+  var str = "2367820149QWERTYUIOPASDFGHJKLZXCVBNM1456789";
+  var res = '#';
+  for (var i = 0; i < num; i++) {
+    res += str[Math.floor(Math.random() * str.length)];
+  }
+  return res;
+}
+
+module.exports = { walk, walk1, generate8Code };

@@ -1,7 +1,7 @@
 const mongoose = require('../utils/db');
 
 const taskSchema = new mongoose.Schema({
-    name : String,
+    name : String,  
     content : String,
     startTime: Object, // 开始时间
     endTime: Object,  // 结束时间
@@ -9,7 +9,8 @@ const taskSchema = new mongoose.Schema({
     projectId: String,
     tag: Array,        // 任务标签
     comment: Array,   // 任务评论
-    principal: Object   // 任务负责人
+    principal: Object,   // 任务负责人创建人
+    number: String // 任务编号
 });
 
 module.exports = mongoose.model('tasks',taskSchema);
