@@ -8,6 +8,8 @@ const router = new Router({
 
 // 添加tag
 router.post('/tag/add', TagController.addTag);
+// 添加tag
+router.get('/tag/list', TagController.tagList);
 
 
 

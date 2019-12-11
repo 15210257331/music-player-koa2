@@ -13,6 +13,8 @@ router.post('/project/list', ProjectController.getProjects);
 router.get('/project/detail', ProjectController.getProjectDetail);
 // 新增 project 
 router.post('/project/add', ProjectController.newProject);
+// update project 
+router.post('/project/update', ProjectController.updateProject);
 // 删除project
 router.get('/project/delete', ProjectController.deleteProject);
 // 获取project下的所有task

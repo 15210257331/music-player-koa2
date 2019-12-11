@@ -24,6 +24,25 @@ class TagController {
             }
         }
     }
+    static async tagList(ctx, next) {
+        try {
+            let doc = await Tag.find({});
+            //console.log(doc);
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '获取成功！'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '失败',
+                msg: err
+            }
+        }
+    }
 }
 
 module.exports = TagController;

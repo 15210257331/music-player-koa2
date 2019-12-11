@@ -26,7 +26,7 @@ function checkToken() {
                     })
                     await next();
                 } catch (err) {
-                    // console.log(err);
+                    console.log(err);
                     ctx.body = {
                         code: 302,
                         msg: 'token已过期！'

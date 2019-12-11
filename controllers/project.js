@@ -1,6 +1,7 @@
 const Project = require("../models/project.model");
 const Task = require("../models/task.model");
 const User = require('../models/user.model');
+const Tag = require('../models/tag.model');
 class ProjectController {
 
     // 查询所有项目 (当前登录用户参与的项目可以按name搜索)
@@ -48,8 +49,11 @@ class ProjectController {
             const tasks = await Task.find({ projectId: projectId });
             const principalPromise = tasks.map(item => User.findOne({ "_id": item.principal }));
             const principal = await Promise.all(principalPromise);
-            tasks.map((item,i) => {
-                item.principal = principal[i]
+            const tagPromise = tasks.map(item => Tag.find({ "_id": { $in: item.tag } }));
+            const tag = await Promise.all(tagPromise);
+            tasks.map((item, i) => {
+                item.principal = principal[i];
+                item.tag = tag[i];
             })
             const res = {
                 name: project.name,
@@ -58,7 +62,7 @@ class ProjectController {
                 member: members,
                 _id: project._id,
                 createDate: project.createDate,
-                task: tasks
+                task: tasks,
             };
             ctx.body = {
                 code: 200,
@@ -101,8 +105,39 @@ class ProjectController {
             }
         }
     }
-
-    // 删除project
+    // 更新项目
+    static async updateProject(ctx, next) {
+        const projectId = ctx.request.body.projectId;
+        const tag = ctx.request.body.tag;
+        try {
+            const doc = await Project.findOneAndUpdate({
+                _id: projectId
+            }, {
+                    $set: {
+                        name: ctx.request.body.name,
+                        content: ctx.request.body.content,
+                        member: ctx.request.body.member,
+                    }
+                }, {
+                    new: true
+                })
+            if (doc) {
+                console.log(doc);
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '更新成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 200,
+                data: '更新失败',
+                msg: err
+            }
+        }
+    }
+    // 删除项目
     static async deleteProject(ctx, next) {
         let id = ctx.request.query.id;
         try {

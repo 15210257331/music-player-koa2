@@ -9,7 +9,7 @@ const taskSchema = new mongoose.Schema({
     projectId: String,
     tag: Array,        // 任务标签
     comment: Array,   // 任务评论
-    principal: Object,   // 任务负责人创建人
+    principal: Object,   // 任务负责人创建人id
     number: String // 任务编号
 });
 

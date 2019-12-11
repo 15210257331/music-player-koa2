@@ -140,7 +140,7 @@ class TaskController {
     static async getTaskComment(ctx, next) {
         const taskId = ctx.request.query.taskId;
         try {
-            let doc = await Comment.find({taskId: taskId})
+            let doc = await Comment.find({ taskId: taskId })
             if (doc) {
                 ctx.body = {
                     code: 200,
