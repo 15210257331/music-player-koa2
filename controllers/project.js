@@ -47,6 +47,7 @@ class ProjectController {
             const members = await User.find({ "_id": { $in: project.member } });
             const creater = await User.findOne({ "_id": project.creater });
             const tasks = await Task.find({ projectId: projectId });
+            const projectTag = await Tag.find({ projectId: projectId });
             const principalPromise = tasks.map(item => User.findOne({ "_id": item.principal }));
             const principal = await Promise.all(principalPromise);
             const tagPromise = tasks.map(item => Tag.find({ "_id": { $in: item.tag } }));
@@ -63,6 +64,7 @@ class ProjectController {
                 _id: project._id,
                 createDate: project.createDate,
                 task: tasks,
+                tag: projectTag
             };
             ctx.body = {
                 code: 200,
@@ -108,21 +110,14 @@ class ProjectController {
     // 更新项目
     static async updateProject(ctx, next) {
         const projectId = ctx.request.body.projectId;
-        const tag = ctx.request.body.tag;
+        const update = Object.assign({}, ctx.request.body);
+        delete update.projectId;
         try {
-            const doc = await Project.findOneAndUpdate({
-                _id: projectId
-            }, {
-                    $set: {
-                        name: ctx.request.body.name,
-                        content: ctx.request.body.content,
-                        member: ctx.request.body.member,
-                    }
-                }, {
-                    new: true
-                })
+            const doc = await Project.findOneAndUpdate({ _id: projectId }, { $set: update }, { new: true });
+            const member = await User.find({ "_id": { $in: doc.member } });
             if (doc) {
                 console.log(doc);
+                doc.member = member;
                 ctx.body = {
                     code: 200,
                     data: doc,

@@ -1,6 +1,8 @@
 const Task = require("../models/task.model");
 const Comment = require("../models/comment.model");
 const helper = require('../utils/helper');
+const User = require('../models/user.model');
+const Tag = require('../models/tag.model');
 
 class TaskController {
 
@@ -12,17 +14,46 @@ class TaskController {
         })
         try {
             let doc = await Task.create(data);
-            if (doc) {
-                ctx.body = {
-                    code: 200,
-                    data: doc,
-                    msg: '任务添加成功！'
-                }
+            const principal = await User.findOne({ "_id": doc.principal })
+            const tag = await Tag.find({ "_id": { $in: doc.tag } });
+            const res = Object.assign({}, doc._doc, {
+                principal: principal,
+                tag: tag
+            })
+            ctx.body = {
+                code: 200,
+                data: res,
+                msg: '任务添加成功！'
             }
         } catch (err) {
             ctx.body = {
                 code: 999,
                 data: '任务添加失败',
+                msg: err
+            }
+        }
+    }
+
+    // 根据ID插叙任务详情
+    static async getTaskDetailById(ctx, next) {
+        const taskId = ctx.request.query._id;
+        try {
+            let task = await Task.findOne({ '_id': taskId });
+            const principal = await User.findOne({ "_id": task.principal })
+            const tag = await Tag.find({ "_id": { $in: task.tag } });
+            const res = Object.assign({}, task, {
+                principal: principal,
+                tag: tag
+            })
+            ctx.body = {
+                code: 200,
+                data: res,
+                msg: 'success'
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: 'fail',
                 msg: err
             }
         }
@@ -152,6 +183,33 @@ class TaskController {
             ctx.body = {
                 code: 999,
                 data: '获取评论失败',
+                msg: err
+            }
+        }
+    }
+
+    // 获取当前用户的任务
+    static async getMyTasks(ctx, next) {
+        const userId = ctx.state.userInfo._id;
+        try {
+            const tasks = await Task.find({ principal: userId });
+            const principalPromise = tasks.map(item => User.findOne({ "_id": item.principal }));
+            const principal = await Promise.all(principalPromise);
+            const tagPromise = tasks.map(item => Tag.find({ "_id": { $in: item.tag } }));
+            const tag = await Promise.all(tagPromise);
+            tasks.map((item, i) => {
+                item.principal = principal[i];
+                item.tag = tag[i];
+            })
+            ctx.body = {
+                code: 200,
+                data: tasks,
+                msg: 'success'
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: 'fail',
                 msg: err
             }
         }

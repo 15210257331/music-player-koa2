@@ -1,9 +1,11 @@
 const socket_io = require('socket.io');
 const Schedule = require("../models/schedule.model");
-
+const moment = require('moment');
 
 
 var socketio = {};
+
+var interval;
 
 // 在socket对象上添加一个getSocketio的方法
 
@@ -12,22 +14,27 @@ socketio.getSocketio = function (server) {
     const io = socket_io.listen(server);
 
     io.sockets.on('connection', async (socket) => { // socket代表连接上socket的client实例
-        // console.log(socket);
-        let scheduleList = await Schedule.find({}).sort({ update_at: -1 });
-        setInterval(function () {
-            scheduleList.map(item => {
-                const scheduleStartTime = Date.parse(new Date(item.startTime)); // 精确到秒的时间戳
-                const remindTime = Date.parse(new Date()) + (1000 * 60 * 5);
-                if (scheduleStartTime === remindTime) {
-                    socket.emit("remind", { data: `日程${item.name}于${new Date(item.startTime).toLocaleString()}开始` }); // 向该客户端发送getMsg事件
-                }
-            })
-        }, 1000);
-
-
-        socket.emit('getMsg', '我是来自socket的数据');
-
+        socket.on('setRemind', async (data) => {
+            setRemind(socket, userId);
+        })
+        socket.emit('getMsg', '我是socket推送过来的数据');
     })
 };
+
+var setRemind = async (socket, userId) => {
+    if (interval) {
+        clearInterval(interval)
+    }
+    let scheduleList = await Schedule.find({ "participant": { $elemMatch: { $eq: userId } } }).sort({ startTime: 1 });
+    interval = setInterval(function () {
+        scheduleList.map(item => {
+            const scheduleRemindTime = Number(moment(item.startTime).format('X')) - 60 * 2;
+            let now = Number(moment().format('X'));
+            if (now === scheduleRemindTime) {
+                socket.emit("remind", { data: `日程${item.name}于${moment(item.startTime).format('YYYY-MM-DD HH:mm:ss')}开始` }); // 向该客户端发送getMsg事件
+            }
+        })
+    }, 1000);
+}
 
 module.exports = socketio;
