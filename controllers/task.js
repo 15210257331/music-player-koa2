@@ -34,7 +34,7 @@ class TaskController {
         }
     }
 
-    // 根据ID插叙任务详情
+    // 根据ID查询任务详情
     static async getTaskDetailById(ctx, next) {
         const taskId = ctx.request.query._id;
         try {

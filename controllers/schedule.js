@@ -9,7 +9,7 @@ class ScheduleController {
     static async getAllSchedule(ctx, next) {
         const userId = ctx.state.userInfo._id.toString(); // 需要把objectId对象转换成string
         try {
-            const schedules = await Schedule.find({ "participant": { $elemMatch: { $eq: userId } } }).sort({ startTime: 1 });
+            const schedules = await Schedule.find({ "participant": { $elemMatch: { $eq: userId }}}).sort({ startTime: 1 });
             const participantPromise = schedules.map(item => User.find({ "_id": { $in: item.participant } }));
             const participant = await Promise.all(participantPromise);
             const organizerPromise = schedules.map(item => User.findOne({ "_id": item.organizer }));
