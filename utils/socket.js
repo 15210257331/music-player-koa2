@@ -15,7 +15,7 @@ socketio.getSocketio = function (server) {
 
     io.sockets.on('connection', async (socket) => { // socket代表连接上socket的client实例
         socket.on('setRemind', async (data) => {
-            setRemind(socket, data.userId);
+            setRemind(socket, data);
         })
         socket.emit('getMsg', '我是socket推送过来的数据');
     })
@@ -25,9 +25,7 @@ var setRemind = async (socket, userId) => {
     if (interval) {
         clearInterval(interval)
     }
-    // { "participant": { $elemMatch: { $eq: userId } } }
-    let scheduleList = await Schedule.find().sort({ startTime: 1 });
-    console.log(scheduleList);
+    let scheduleList = await Schedule.find({ "participant": { $elemMatch: { $eq: userId } }, startTime: { $gte: Number(moment().format('x')) } }).sort({ startTime: 1 });
     interval = setInterval(function () {
         scheduleList.map(item => {
             const scheduleRemindTime = Number(moment(item.startTime).format('X')) - 60 * 2;

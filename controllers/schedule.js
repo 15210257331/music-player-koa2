@@ -5,7 +5,7 @@ const events = require('events');
 
 class ScheduleController {
 
-    // 查询所有日程 (查询当前用户参加的日程)
+    // 查询所有日程 (查询当前用户参加的日程 且为当前时间之后的)
     static async getAllSchedule(ctx, next) {
         const userId = ctx.state.userInfo._id.toString(); // 需要把objectId对象转换成string
         try {
