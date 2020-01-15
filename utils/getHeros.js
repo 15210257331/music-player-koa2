@@ -1,49 +1,53 @@
+const superagent = require('superagent');
+const cheerio = require('cheerio');
+const async = require('async');
+const fs = require('fs');
+
 concurrencyCount = 0; // 当前并发数记录
 
 function getHero() {
     console.log('爬虫程序开始运行......');
-    superagent
-        .get('http://lol.duowan.com/hero/')
-        .end(function (err, res) {
-            var $ = cheerio.load(res.text, { decodeEntities: false });
-            //找到每个英雄的链接，并存入数组，等待并行请求
-            var heroes = new Array();
-            $("a.lol_champion").each(function (i, e) {
-                heroes.push($(e).attr("href"));
-            });
-
-            //并发遍历heroes对象
-            async.mapLimit(heroes, 1,
-                function (heroUrl, callback) {
-                    // 对每个角色对象的处理逻辑
-                    this.fetchInfo(heroUrl, callback);
-                },
-                function (err, result) {
-                    if (err) {
-                        console.log("error is:" + err);
-                    }
-                    //这里的result就是fetchInfo方法的callback返回的数组
-                    console.log("抓取结束，共计:" + result.length + "个英雄数据");
-                    result.forEach(function (item, index) {
-                        Hero.create(item, function (err, hero) {
-                            if (err) {
-                                console.log(err)
-                            } else {
-                                console.log(hero)
-                            }
-                        });
-                    });
-                    // 使用fs写出到文件
-                    // fs.writeFile('../public/heroes.json',JSON.stringify(result), function (err) {
-                    //     if (err) {
-                    //         throw err;
-                    //     }else{
-                    //         console.log("写入文件成功");
-                    //     }
-                    // });
-                }
-            );
+    superagent.get('http://lol.duowan.com/hero/').end(function (err, res) {
+        var $ = cheerio.load(res.text, { decodeEntities: false });
+        //找到每个英雄的链接，并存入数组，等待并行请求
+        var heroes = new Array();
+        $("a.lol_champion").each(function (i, e) {
+            heroes.push($(e).attr("href"));
         });
+        //并发遍历heroes对象
+        // mapLimit(arr, limit, iterator, callback)
+        // arr中一般是多个请求的url，limit为并发限制次数，mapLimit方法将arr中的每一项依次拿给iterator去执行，执行结果传给最后的callback；
+        async.mapLimit(heroes, 1,
+            function (heroUrl, callback) {
+                // 对每个角色对象的处理逻辑
+                this.fetchInfo(heroUrl, callback);
+            },
+            function (err, result) {
+                if (err) {
+                    console.log("error is:" + err);
+                }
+                //这里的result就是fetchInfo方法的callback返回的数组
+                console.log("抓取结束，共计:" + result.length + "个英雄数据");
+                // result.forEach(function (item, index) {
+                //     Hero.create(item, function (err, hero) {
+                //         if (err) {
+                //             console.log(err)
+                //         } else {
+                //             console.log(hero)
+                //         }
+                //     });
+                // });
+                // 使用fs写出到文件
+                fs.writeFile('./heroes.json', JSON.stringify(result), function (err) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        console.log("写入文件成功");
+                    }
+                });
+            }
+        );
+    });
 }
 
 function fetchInfo(heroUrl, callback) {
@@ -148,3 +152,5 @@ function fetchInfo(heroUrl, callback) {
             }
         });
 }
+
+module.exports = { getHero, fetchInfo }
