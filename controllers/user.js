@@ -106,16 +106,16 @@ class UserController {
       let doc = await User.findOneAndUpdate({
         _id: ctx.state.userInfo._id
       }, {
-          $set: {
-            avatar: newAvatar,
-            username: newUsername,
-            nickname: newNickname,
-            email: newEmail,
-            introduction: newIntroduction
-          }
-        }, {
-          new: true
-        })
+        $set: {
+          avatar: newAvatar,
+          username: newUsername,
+          nickname: newNickname,
+          email: newEmail,
+          introduction: newIntroduction
+        }
+      }, {
+        new: true
+      })
       ctx.body = {
         code: 200,
         data: doc
@@ -128,7 +128,7 @@ class UserController {
     }
   }
 
-  // 获取成员列表
+  // 获取所有成员列表
   static async memberList(ctx, next) {
     try {
       let doc = await User.find({}).sort({ update_at: -1 });
@@ -147,11 +147,24 @@ class UserController {
     }
   }
 
-  // 删除用户
-  static async delete(ctx) {
-    ctx.body = {
-      result: true,
-      data: '成功!'
+  // 删除成员
+  static async deleteMember(ctx) {
+    let userId = ctx.request.query.id;
+    try {
+      let doc = await User.deleteOne({ _id: userId })
+      if (doc) {
+        ctx.body = {
+          code: 200,
+          data: userId,
+          msg: '删除成功'
+        }
+      }
+    } catch (err) {
+      ctx.body = {
+        code: 999,
+        data: '删除失败',
+        msg: err
+      }
     }
   }
 }

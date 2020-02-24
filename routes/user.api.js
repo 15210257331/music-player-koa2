@@ -27,7 +27,7 @@ router.post('/user/register', UserController.register);
 // 用户登录
 router.post('/user/login', UserController.login);
 // 删除用户
-router.delete('/user/delete/:id', UserController.delete);
+router.get('/user/delete', UserController.deleteMember);
 // 获取用户信息
 router.get('/user/info', UserController.getUserInfo);
 // 修改用户信息

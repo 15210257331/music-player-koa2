@@ -7,6 +7,8 @@ var socketio = {};
 
 var interval;
 
+var users = {}; // userId : socket  记录登录每个登录用户id和他对应的socket的集合
+
 // 在socket对象上添加一个getSocketio的方法
 
 socketio.getSocketio = function (server) {
@@ -14,10 +16,24 @@ socketio.getSocketio = function (server) {
     const io = socket_io.listen(server);
 
     io.sockets.on('connection', async (socket) => { // socket代表连接上socket的client实例
+        // 设置日程提醒
         socket.on('setRemind', async (data) => {
             setRemind(socket, data);
         })
-        socket.emit('getMsg', '我是socket推送过来的数据');
+        // 新登录用户
+        socket.on('new user', async (data) => { // data 是用户ID  userId
+            users[data] = socket;
+            console.log(Object.keys(users));
+        })
+        // 用户登出
+        socket.on('disconnect', async (data) => {
+            console.log('user' + socket.id + ' disconnected');
+            delete users[data];
+        });
+        // 发送一对一消息
+        socket.on('private message', async (data) => { // data.from 和 data.to 都是userId
+            users[data.to].emit('to' + data.to, { from: data.from, to: data.to, msgType: '22', msg: data.msg });
+        })
     })
 };
 
