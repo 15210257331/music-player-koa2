@@ -1,7 +1,7 @@
 const socket_io = require('socket.io');
 const Schedule = require("../models/schedule.model");
 const moment = require('moment');
-
+const Message = require("../models/message.model");
 
 var socketio = {};
 
@@ -22,7 +22,10 @@ socketio.getSocketio = function (server) {
         })
         // 新登录用户
         socket.on('new user', async (data) => { // data 是用户ID  userId
-            users[data] = socket;
+            const keys = Object.keys(users);
+            if (data && keys.indexOf(data) < 0) {
+                users[data] = socket;
+            }
             console.log(Object.keys(users));
         })
         // 用户登出
@@ -32,7 +35,11 @@ socketio.getSocketio = function (server) {
         });
         // 发送一对一消息
         socket.on('private message', async (data) => { // data.from 和 data.to 都是userId
-            users[data.to].emit('to' + data.to, { from: data.from, to: data.to, msgType: '22', msg: data.msg });
+            const msg = Object.assign({}, data, {
+                msgDate: new Date().getTime()
+            });
+            users[data.to].emit('to' + data.to, msg);
+            await Message.create(msg);
         })
     })
 };

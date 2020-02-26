@@ -116,7 +116,6 @@ class ProjectController {
             const doc = await Project.findOneAndUpdate({ _id: projectId }, { $set: update }, { new: true });
             const member = await User.find({ "_id": { $in: doc.member } });
             if (doc) {
-                console.log(doc);
                 doc.member = member;
                 ctx.body = {
                     code: 200,
