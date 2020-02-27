@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     phoneNumber: Number,
     avatar : String,
     introduction: String,
-    sex: Number,
+    sex: Number, // 1 男  2 女
     role: Array, // 角色
 });
 

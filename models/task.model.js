@@ -5,7 +5,7 @@ const taskSchema = new mongoose.Schema({
     content : String,
     startTime: Object, // 开始时间
     endTime: Object,  // 结束时间
-    status: Number,    // 1未开始  2进行中  3已完成  4已作废 
+    status: Number,    // 1未开始  2进行中  3已完成  4已作废  5 已删除
     projectId: String,
     tag: Array,        // 任务标签
     comment: Array,   // 任务评论

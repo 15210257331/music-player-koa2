@@ -28,22 +28,27 @@ socketio.getSocketio = function (server) {
             }
             console.log(Object.keys(users));
         })
-        // 用户登出
-        socket.on('disconnect', async (data) => {
-            console.log('user' + socket.id + ' disconnected');
-            delete users[data];
-        });
-        // 发送一对一消息
-        socket.on('private message', async (data) => { // data.from 和 data.to 都是userId
+        // 发送一对一消息  // data.from 和 data.to 都是userId
+        socket.on('private message', async (data) => {
             const msg = Object.assign({}, data, {
                 msgDate: new Date().getTime()
             });
-            users[data.to].emit('to' + data.to, msg);
             await Message.create(msg);
+            users[data.to].emit('to' + data.to, msg);
         })
+        // 用户登出
+        socket.on('disconnect', async (data) => {
+            for (var i in users) {
+                if (users[i].id === socket.id) {
+                    delete users[i];
+                }
+            }
+            console.log(Object.keys(users));
+        });
     })
 };
 
+// 设置日程提醒
 var setRemind = async (socket, userId) => {
     if (interval) {
         clearInterval(interval)
