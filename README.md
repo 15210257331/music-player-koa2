@@ -1,7 +1,9 @@
 # server
- music player 数据提供
 
-### music player api
+ 为simple-pm 提供接口
+ 
+### simple project manager api
 
 ### npm install
-### npm run start
+
+### npm run start:dev

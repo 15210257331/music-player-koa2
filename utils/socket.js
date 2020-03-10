@@ -1,7 +1,7 @@
 const socket_io = require('socket.io');
-const Schedule = require("../models/schedule.model");
+const Schedule = require("../modules/schedule/schedule.model");
 const moment = require('moment');
-const Message = require("../models/message.model");
+const Message = require("../modules/message/message.model");
 
 var socketio = {};
 

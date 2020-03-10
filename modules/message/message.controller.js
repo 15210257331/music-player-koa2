@@ -1,5 +1,5 @@
-const Message = require("../models/message.model");
-const helper = require('../utils/helper');
+const Message = require("./message.model");
+const helper = require('../../utils/helper');
 
 class MessageController {
 

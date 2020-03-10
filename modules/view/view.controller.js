@@ -1,7 +1,7 @@
 class ViewController {
     static async index(ctx, next) {
         await ctx.render('index', {
-            title: 'koa2 版本简易项目管理api',
+            title: 'simple-pm 相关api接口',
             subTitle: 'koa2版本QQ音乐api',
             guide: '查看文档'
         })

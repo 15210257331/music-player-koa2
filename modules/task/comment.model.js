@@ -1,4 +1,4 @@
-const mongoose = require('../utils/db');
+const mongoose = require('../../utils/db');
 
 const commentSchema = new mongoose.Schema({
     commentAuthor: Object, // 评论人

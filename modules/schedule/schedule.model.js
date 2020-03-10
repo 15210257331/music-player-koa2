@@ -1,4 +1,4 @@
-const mongoose = require('../utils/db');
+const mongoose = require('../../utils/db');
 
 const scheduleSchema = new mongoose.Schema({
     name : String,

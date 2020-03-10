@@ -1,5 +1,5 @@
-const Tag = require("../models/tag.model");
-const helper = require('../utils/helper');
+const Tag = require("./tag.model");
+const helper = require('../../utils/helper');
 
 class TagController {
 

@@ -1,8 +1,8 @@
 const Router = require('koa-router')
-const UserController = require('../controllers/user')
+const UserController = require('./user.controller')
 const multer = require('koa-multer');
 const path = require('path');
-const config = require('../utils/config');
+const config = require('../../utils/config');
 
 const router = new Router({
     prefix: config.prefix
@@ -10,7 +10,7 @@ const router = new Router({
 
 const storageZip = multer.diskStorage({
     destination: function (req, file, cb) {
-        let avatarPath = path.resolve(__dirname, '../public/images/avatar'); //会对../进行解析
+        let avatarPath = path.resolve(__dirname, '../../public/images/avatar'); //会对../进行解析
         console.log(avatarPath);
         cb(null, avatarPath); //文件存储路径
     },

@@ -1,7 +1,7 @@
-const Project = require("../models/project.model");
-const Task = require("../models/task.model");
-const User = require('../models/user.model');
-const Tag = require('../models/tag.model');
+const Project = require("./project.model");
+const Task = require("../task/task.model");
+const User = require('../user/user.model');
+const Tag = require('../tag/tag.model');
 class ProjectController {
 
     // 查询所有项目 (当前登录用户参与的项目可以按name搜索)

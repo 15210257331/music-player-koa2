@@ -1,6 +1,6 @@
 const Router = require('koa-router')
-const ViewController = require('../controllers/view')
-const config = require('../utils/config');
+const ViewController = require('./view.controller')
+const config = require('../../utils/config');
 
 const router = new Router({
     prefix: config.prefix

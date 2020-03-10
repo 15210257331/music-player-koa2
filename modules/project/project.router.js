@@ -1,6 +1,6 @@
 const Router = require('koa-router')
-const ProjectController = require('../controllers/project');
-const config = require('../utils/config');
+const ProjectController = require('./project.controller');
+const config = require('../../utils/config');
 
 const router = new Router({
     prefix: config.prefix

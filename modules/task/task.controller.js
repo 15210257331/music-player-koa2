@@ -1,8 +1,8 @@
-const Task = require("../models/task.model");
-const Comment = require("../models/comment.model");
-const helper = require('../utils/helper');
-const User = require('../models/user.model');
-const Tag = require('../models/tag.model');
+const Task = require("./task.model");
+const Comment = require("./comment.model");
+const helper = require('../../utils/helper');
+const User = require('../user/user.model');
+const Tag = require('../tag/tag.model');
 
 class TaskController {
 

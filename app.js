@@ -33,7 +33,7 @@ app.use(timeLog());
 app.use(checkToken());
 
 // 注册路由
-helper.walk(path.join(__dirname, 'routes'), app);
+helper.walk(path.join(__dirname, 'modules'), app);
 
 // error-handling
 app.on('error', (err, ctx) => {
