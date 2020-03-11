@@ -21,7 +21,6 @@ const storageZip = multer.diskStorage({
 
 var upload = multer({ storage: storageZip });
 
-
 // 用户注册
 router.post('/user/register', UserController.register);
 // 用户登录

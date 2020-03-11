@@ -2,6 +2,7 @@ const Project = require("./project.model");
 const Task = require("../task/task.model");
 const User = require('../user/user.model');
 const Tag = require('../tag/tag.model');
+const config = require('../../utils/config');
 class ProjectController {
 
     // 查询所有项目 (当前登录用户参与的项目可以按name搜索)
@@ -21,6 +22,7 @@ class ProjectController {
                     content: item.content,
                     creater: creater[i],
                     member: member[i],
+                    cover: item.cover,
                     _id: item._id,
                     createDate: item.createDate
                 }
@@ -107,6 +109,17 @@ class ProjectController {
             }
         }
     }
+
+    // 上传项目封面
+    static async uploadImg(ctx, next) {
+        const projectCoverUrl = `${config.host}:${config.port}/images/project-cover/${ctx.req.file.filename}`;
+        ctx.body = {
+            code: 200,
+            data: projectCoverUrl,
+            msg: '图片上传成功'
+        }
+    }
+
     // 更新项目
     static async updateProject(ctx, next) {
         const projectId = ctx.request.body.projectId;
@@ -125,7 +138,7 @@ class ProjectController {
             }
         } catch (err) {
             ctx.body = {
-                code: 200,
+                code: 999,
                 data: '更新失败',
                 msg: err
             }

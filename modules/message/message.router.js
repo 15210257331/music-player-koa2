@@ -7,7 +7,7 @@ const router = new Router({
 })
 
 
-// project 列表
+// 消息列表
 router.get('/message/list', MessageController.getMessages);
 
 
