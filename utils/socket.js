@@ -26,7 +26,7 @@ socketio.getSocketio = function (server) {
             if (data && keys.indexOf(data) < 0) {
                 users[data] = socket;
             }
-            console.log(Object.keys(users));
+            // console.log(Object.keys(users));
         })
         // 发送一对一消息  // data.from 和 data.to 都是userId
         socket.on('private message', async (data) => {
@@ -34,7 +34,9 @@ socketio.getSocketio = function (server) {
                 msgDate: new Date().getTime()
             });
             await Message.create(msg);
-            users[data.to].emit('to' + data.to, msg);
+            if (users[data.to]) { // 如果在线直接发送过去 如果不在线不发送 存数据库 之后再推送
+                users[data.to].emit('to' + data.to, msg);
+            }
         })
         // 用户登出
         socket.on('disconnect', async (data) => {
@@ -43,7 +45,7 @@ socketio.getSocketio = function (server) {
                     delete users[i];
                 }
             }
-            console.log(Object.keys(users));
+            // console.log(Object.keys(users));
         });
     })
 };
