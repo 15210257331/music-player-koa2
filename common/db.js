@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('./config');
 
-const url = `mongodb://${config.mongoDB.username}:${config.mongoDB.username}@${config.mongoDB.host}:${config.mongoDB.port}/${config.mongoDB.database}`;
+const url = `mongodb://${config.mongoDB.username}:${config.mongoDB.password}@${config.mongoDB.host}:${config.mongoDB.port}/${config.mongoDB.database}`;
 
 //连接数据库
 mongoose.connect(url,{useNewUrlParser:true});

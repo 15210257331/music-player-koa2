@@ -1,6 +1,6 @@
 const Task = require("./task.model");
 const Comment = require("./comment.model");
-const helper = require('../../utils/helper');
+const helper = require('../../common/helper');
 const User = require('../user/user.model');
 const Tag = require('../tag/tag.model');
 

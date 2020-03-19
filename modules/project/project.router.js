@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const ProjectController = require('./project.controller');
-const config = require('../../utils/config');
+const config = require('../../common/config');
 const multer = require('koa-multer');
 const path = require('path');
 

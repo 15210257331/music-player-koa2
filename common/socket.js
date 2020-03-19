@@ -28,14 +28,17 @@ socketio.getSocketio = function (server) {
             }
             // console.log(Object.keys(users));
         })
-        // 发送一对一消息  // data.from 和 data.to 都是userId
+        // 发送一对一消息  data.from 和 data.to 都是userId
         socket.on('private message', async (data) => {
             const msg = Object.assign({}, data, {
                 msgDate: new Date().getTime()
             });
-            await Message.create(msg);
-            if (users[data.to]) { // 如果在线直接发送过去 如果不在线不发送 存数据库 之后再推送
+            // 如果在线直接发送过去 如果不在线不发送存数据库之后再推送
+            if (users[data.to]) { 
                 users[data.to].emit('to' + data.to, msg);
+                await Message.create(msg);
+            } else {
+                await Message.create(msg);
             }
         })
         // 用户登出

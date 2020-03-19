@@ -9,16 +9,20 @@ const static = require('koa-static');
 const cors = require('koa2-cors');
 
 const timeLog = require('./middleware/timeLog');
+const errHandle = require('./middleware/errHandle');
 const checkToken = require('./middleware/checkToken');
-const helper = require('./utils/helper');
+const helper = require('./common/helper');
 
 
 // error handler
-onerror(app)
+// onerror(app)
 
-app.use(json())
+// 错误处理中间件要发在最前面
+app.use(errHandle());
 
-app.use(cors());
+app.use(json()) // 将相应对象装换成json格式
+
+app.use(cors()); // 解决跨域
 
 app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 
@@ -37,7 +41,7 @@ helper.walk(path.join(__dirname, 'modules'), app);
 
 // error-handling
 app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx)
+  console.error('server error', err, ctx);
 });
 
 module.exports = app

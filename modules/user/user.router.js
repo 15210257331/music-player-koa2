@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const UserController = require('./user.controller')
 const multer = require('koa-multer');
 const path = require('path');
-const config = require('../../utils/config');
+const config = require('../../common/config');
 
 const router = new Router({
     prefix: config.prefix

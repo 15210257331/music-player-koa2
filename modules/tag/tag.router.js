@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const TagController = require('./tag.controller');
-const config = require('../../utils/config');
+const config = require('../../common/config');
 
 const router = new Router({
     prefix: config.prefix

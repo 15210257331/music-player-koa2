@@ -2,9 +2,8 @@ const Project = require("./project.model");
 const Task = require("../task/task.model");
 const User = require('../user/user.model');
 const Tag = require('../tag/tag.model');
-const config = require('../../utils/config');
+const config = require('../../common/config');
 class ProjectController {
-
     // 查询所有项目 (当前登录用户参与的项目可以按name搜索)
     static async getProjects(ctx, next) {
         const userId = ctx.state.userInfo._id.toString();

@@ -1,4 +1,4 @@
-const mongoose = require('../../utils/db');
+const mongoose = require('../../common/db');
 
 const messageSchema = new mongoose.Schema({
     from: String, // 发送人ID

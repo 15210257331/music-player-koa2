@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const util = require('util')
 const verify = util.promisify(jwt.verify)
-const config = require('../utils/config');
+const config = require('../common/config');
 const User = require('../modules/user/user.model');
 
 const notCheckUrls = ['/api/user/login', '/api/user/register','/api/index', '/api/doc']
