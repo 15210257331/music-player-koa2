@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const config = require('../../common/config');
-
+const Role = require('./role.model');
 
 class UserController {
 
@@ -44,7 +44,7 @@ class UserController {
     await next();
   }
 
-  // 注册
+  // 注册 / 添加成员
   static async register(ctx, next) {
     let userInfo = ctx.request.body;
     const defaultAvatarUrl = `${config.host}:${config.port}/images/avatar/avatar-default.png`;
@@ -128,10 +128,40 @@ class UserController {
     }
   }
 
-  // 获取所有成员列表
+  // 设置用户角色
+  static async setMemberRole(ctx, next) {
+    const memberId = ctx.request.body.memberId;
+    const updateData = {
+      role: ctx.request.body.roleIds
+    }
+    try {
+      let doc = await User.findOneAndUpdate({ _id: memberId }, { $set: updateData }, { new: true });
+      if (doc) {
+        ctx.body = {
+          code: 200,
+          data: doc,
+          msg: '操作成功'
+        }
+      }
+    } catch (err) {
+      ctx.body = {
+        code: 999,
+        msg: err
+      }
+    }
+  }
+
+  // 获取所有用户列表
   static async memberList(ctx, next) {
     try {
-      let doc = await User.find({}).sort({ update_at: -1 });
+      const users = await User.find({}).sort({ update_at: -1 });
+      const rolesPromise = users.map(item => Role.find({ "_id": { $in: item.role } }));
+      const roles = await Promise.all(rolesPromise);
+      const doc = users.map((item, i) => {
+        return Object.assign({}, item._doc, {
+          role: roles[i]
+        })
+      })
       if (doc) {
         ctx.body = {
           code: 200,
@@ -141,7 +171,7 @@ class UserController {
       }
     } catch (err) {
       ctx.body = {
-        code: false,
+        code: 999,
         msg: err
       }
     }

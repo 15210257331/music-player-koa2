@@ -20,8 +20,8 @@ socketio.getSocketio = function (server) {
         socket.on('setRemind', async (data) => {
             setRemind(socket, data);
         })
-        // 新登录用户
-        socket.on('new user', async (data) => { // data 是用户ID  userId
+        // 新登录用户 data 是用户ID  userId
+        socket.on('new user', async (data) => {
             const keys = Object.keys(users);
             if (data && keys.indexOf(data) < 0) {
                 users[data] = socket;

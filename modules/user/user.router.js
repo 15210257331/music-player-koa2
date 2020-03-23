@@ -1,5 +1,6 @@
 const Router = require('koa-router')
 const UserController = require('./user.controller')
+const RoleController = require('./role.controller')
 const multer = require('koa-multer');
 const path = require('path');
 const config = require('../../common/config');
@@ -33,7 +34,18 @@ router.get('/user/info', UserController.getUserInfo);
 router.post('/user/info/update', UserController.updateUserInfo);
 // 上传图片
 router.post('/user/uploadImg', upload.single('avatar'), UserController.uploadImg);
+// 成员列表
+router.get('/user/list', UserController.memberList);
+// 设置成员角色
+router.post('/user/setMemberRole', UserController.setMemberRole);
 
-router.get('/user/member/list', UserController.memberList);
+// 角色列表
+router.get('/role/list', RoleController.getRole);
+// 添加角色
+router.post('/role/add', RoleController.addRole);
+// 修改角色
+router.post('/role/update', RoleController.updateRole);
+// 删除角色
+router.get('/role/delete', RoleController.deleteRole);
 
 module.exports = router;
