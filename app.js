@@ -17,7 +17,7 @@ const helper = require('./common/helper');
 // error handler
 // onerror(app)
 
-// 错误处理中间件要发在最前面
+// 错误处理中间件要方在最前面
 app.use(errHandle());
 
 app.use(json()) // 将相应对象装换成json格式

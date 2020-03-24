@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const UserController = require('./user.controller')
-const RoleController = require('./role.controller')
+const RoleController = require('../role/role.controller')
 const multer = require('koa-multer');
 const path = require('path');
 const config = require('../../common/config');
