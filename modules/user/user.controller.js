@@ -2,9 +2,10 @@ const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const config = require('../../common/config');
 const Role = require('./role.model');
-
+const helper = require('../../common/helper');
 class UserController {
 
+  // 登录
   static async login(ctx, next) {
     let password = ctx.request.body.password;
     let username = ctx.request.body.username;
@@ -27,7 +28,7 @@ class UserController {
           username: doc.username,
           _id: doc._id,
         }
-        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60 * 60 * 24 * 7 })  //token签名 有效期为7tina
+        const token = await jwt.sign(userInfo, config.secret, { expiresIn: 60 * 60 * 24 * 7 })  //token签名 有效期为7天
         ctx.body = {
           code: 200,
           token: token,
@@ -78,10 +79,17 @@ class UserController {
 
   // 获取用户信息
   static async getUserInfo(ctx, next) {
+    // 查询当前用户所有角色
+    const roles = await Role.find({ "_id": { $in: ctx.state.userInfo.role } });
+    const authority = roles.filter(item => item.authority.length > 0).map(item => item.authority);
+    const data = Array.from(new Set(helper.flatten(authority)))
+    const doc = Object.assign({}, ctx.state.userInfo._doc, {
+      authority: data
+    })
     ctx.body = {
       result: true,
       code: 200,
-      data: ctx.state.userInfo,
+      data: doc,
       msg: '用户信息获取成功'
     }
     await next();
@@ -153,8 +161,10 @@ class UserController {
 
   // 获取所有用户列表
   static async memberList(ctx, next) {
+    const name = ctx.request.body.name;
+    const reg = new RegExp(name, 'i');
     try {
-      const users = await User.find({}).sort({ update_at: -1 });
+      const users = await User.find({ "nickname": { $regex: reg } }).sort({ update_at: -1 });
       const rolesPromise = users.map(item => Role.find({ "_id": { $in: item.role } }));
       const roles = await Promise.all(rolesPromise);
       const doc = users.map((item, i) => {

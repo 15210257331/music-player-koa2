@@ -31,4 +31,12 @@ var generate8Code = function (num) {
   return res;
 }
 
-module.exports = { walk, generate8Code };
+// 数组扁平化
+var flatten = function (arr) {
+  while (arr.some(item => Array.isArray(item))) {
+    arr = [].concat(...arr);
+  }
+  return arr;
+}
+
+module.exports = { walk, generate8Code, flatten };

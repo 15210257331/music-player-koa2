@@ -5,8 +5,10 @@ const config = require('../../common/config');
 class RoleController {
     // 查询角色
     static async getRole(ctx, next) {
+        const name = ctx.request.body.name;
+        const reg = new RegExp(name, 'i');
         try {
-            let doc = await Role.find();
+            let doc = await Role.find({ "name": { $regex: reg } });
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -51,6 +53,28 @@ class RoleController {
         const updateData = {
             name: ctx.request.body.name,
             description: ctx.request.body.description,
+        }
+        try {
+            let doc = await Role.findOneAndUpdate({ _id: _id }, { $set: updateData }, { new: true });
+            ctx.body = {
+                code: 200,
+                data: doc,
+                msg: '修改成功'
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                err: '修改失败'
+            }
+        }
+        await next();
+    }
+
+    // 角色关联权限
+    static async setAuthority(ctx, next) {
+        let _id = ctx.request.body.id;
+        const updateData = {
+            authority: ctx.request.body.authority,
         }
         try {
             let doc = await Role.findOneAndUpdate({ _id: _id }, { $set: updateData }, { new: true });
