@@ -1,34 +1,22 @@
 const Project = require("./project.model");
 const Task = require("../task/task.model");
 const User = require('../user/user.model');
-const Tag = require('../tag/tag.model');
+const Tag = require("./tag.model");
 const config = require('../../common/config');
 class ProjectController {
-    // 查询所有项目 (当前登录用户参与的项目可以按name搜索)
+    // 查询当前用户参与的项目可以按name搜索,按时间倒序排列
     static async getProjects(ctx, next) {
-        const userId = ctx.state.userInfo._id.toString();
+        const userId = ctx.state.userInfo._id;
         const name = ctx.request.body.name;
         const reg = new RegExp(name, 'i');
         try {
-            const projects = await Project.find({ "member": { $elemMatch: { $eq: userId } }, "name": { $regex: reg } });
-            const membersPromise = projects.map(item => User.find({ "_id": { $in: item.member } }));
-            const member = await Promise.all(membersPromise);
-            const creatersPromise = projects.map(item => User.findOne({ "_id": item.creater }));
-            const creater = await Promise.all(creatersPromise);
-            const data = projects.map((item, i) => {
-                return {
-                    name: item.name,
-                    content: item.content,
-                    creater: creater[i],
-                    member: member[i],
-                    cover: item.cover,
-                    _id: item._id,
-                    createDate: item.createDate
-                }
-            })
+            const doc = await Project
+                .find({ "participant": { $elemMatch: { $eq: userId } }, "name": { $regex: reg } })
+                .populate('creator')
+                .sort({ 'createTime': -1 })
             ctx.body = {
                 code: 200,
-                data: data,
+                data: doc,
                 msg: '项目列表查询成功'
             }
         } catch (err) {
@@ -40,59 +28,22 @@ class ProjectController {
         }
     }
 
-    // 查询项目详情
-    static async getProjectDetail(ctx, next) {
-        let projectId = ctx.request.query._id;
-        try {
-            const project = await Project.findOne({ _id: projectId });
-            const members = await User.find({ "_id": { $in: project.member } });
-            const creater = await User.findOne({ "_id": project.creater });
-            const tasks = await Task.find({ projectId: projectId });
-            const projectTag = await Tag.find({ projectId: projectId });
-            const principalPromise = tasks.map(item => User.findOne({ "_id": item.principal }));
-            const principal = await Promise.all(principalPromise);
-            const tagPromise = tasks.map(item => Tag.find({ "_id": { $in: item.tag } }));
-            const tag = await Promise.all(tagPromise);
-            tasks.map((item, i) => {
-                item.principal = principal[i];
-                item.tag = tag[i];
-            })
-            const res = {
-                name: project.name,
-                content: project.content,
-                creater: creater,
-                member: members,
-                _id: project._id,
-                createDate: project.createDate,
-                task: tasks,
-                tag: projectTag
-            };
-            ctx.body = {
-                code: 200,
-                data: res,
-                msg: '查询成功！'
-            }
-        } catch (err) {
-            ctx.body = {
-                code: 999,
-                data: {},
-                msg: '服务器错误'
-            }
-        }
-    }
-
     // 新建项目
-    static async newProject(ctx, next) {
-        let member = ctx.request.body.member;
-        member.unshift(ctx.state.userInfo._id.toString());
+    static async addProject(ctx, next) {
+        let participant = ctx.request.body.participant;
+        participant.unshift(ctx.state.userInfo._id);
         const project = Object.assign({}, ctx.request.body, {
-            creater: ctx.state.userInfo._id.toString(),
-            createDate: new Date(),
+            creator: ctx.state.userInfo._id,
+            participant: participant,
+            cover: `${config.host}:${config.port}/images/avatar/cover-default.png`,
             task: [],
-            member: member
+            tag: []
         })
         try {
-            let doc = await Project.create(project);
+            const res = await Project.create(project);
+            const doc = await Project
+                .findOne({ "_id": res._id })
+                .populate('creator')
             if (doc) {
                 ctx.body = {
                     code: 200,
@@ -122,13 +73,16 @@ class ProjectController {
     // 更新项目
     static async updateProject(ctx, next) {
         const projectId = ctx.request.body.projectId;
-        const update = Object.assign({}, ctx.request.body);
-        delete update.projectId;
+        const update = {
+            name: ctx.request.body.name,
+            content: ctx.request.body.content,
+            cover: ctx.request.body.cover
+        };
         try {
-            const doc = await Project.findOneAndUpdate({ _id: projectId }, { $set: update }, { new: true });
-            const member = await User.find({ "_id": { $in: doc.member } });
+            const doc = await Project
+                .findOneAndUpdate({ _id: projectId }, { $set: update }, { new: true })
+                .populate('creator')
             if (doc) {
-                doc.member = member;
                 ctx.body = {
                     code: 200,
                     data: doc,
@@ -143,16 +97,47 @@ class ProjectController {
             }
         }
     }
-    // 删除项目
-    static async deleteProject(ctx, next) {
-        let id = ctx.request.query.id;
+
+    // 添加项目标签
+    static async addProjectTag(ctx, next) {
+        const insertData = {
+            name: ctx.request.body.name,
+            color: ctx.request.body.color
+        }
+        const projectId = ctx.request.body.projectId;
         try {
-            let doc = await Project.deleteOne({ _id: id });
-            let data = await Task.deleteMany({ projectId: id });
-            if (doc.ok === 1 && data.ok === 1) {
+            const doc = await Tag.create(insertData);
+            await Project.update({ _id: projectId }, { $push: { tag: doc._id } });
+            if (doc) {
                 ctx.body = {
                     code: 200,
-                    data: id,
+                    data: doc,
+                    msg: '添加成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '删除失败',
+                msg: err
+            }
+        }
+
+    }
+
+    // 删除项目
+    static async deleteProject(ctx, next) {
+        let projectId = ctx.request.query.id;
+        try {
+            // 删除项目下的所有任务
+            const taskIds = await Project.find({ _id: projectId }).task;
+            await Task.deleteMany({ _id: { $in: taskIds } });
+            // deleteOne返回删除document的数量
+            const doc = await Project.deleteOne({ _id: projectId });
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: projectId,
                     msg: '删除成功'
                 }
             }
@@ -161,6 +146,30 @@ class ProjectController {
                 code: 999,
                 data: '删除失败',
                 msg: err
+            }
+        }
+    }
+
+    // 查询项目详情
+    static async getProjectDetail(ctx, next) {
+        let projectId = ctx.request.query._id;
+        try {
+            const doc = await Project
+                .findOne({ _id: projectId })
+                .populate("creator")
+                .populate("participant")
+                .populate("tag")
+                .populate("task")
+            ctx.body = {
+                code: 200,
+                data: doc,
+                msg: '查询成功！'
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: {},
+                msg: '查询失败！'
             }
         }
     }

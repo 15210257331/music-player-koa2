@@ -1,13 +1,53 @@
 const mongoose = require('../../common/db');
 
 const projectSchema = new mongoose.Schema({
-    name : String,
-    content : String,
-    task: Array,
-    creater: String, // 项目创建人ID
-    member: Array, // 项目成员IDlist
-    createDate: Date, // 创建时间,
-    cover: String, // 项目封面
+    name: {
+        type: String,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    cover: {
+        type: String,
+        required: true
+    },
+    star: {
+        type: Boolean,
+        default: false
+    },
+    // 任务
+    task: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'tasks'
+        }
+    ],
+    // 项目创建人
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
+    // 项目成员
+    participant: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'users'
+        }
+    ],
+    // 项目标签
+    tag: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'tag'
+        }
+    ],
+    createTime: {
+        type: Date,
+        default: Date.now
+    },
 });
 
-module.exports = mongoose.model('projects',projectSchema);
+module.exports = mongoose.model('projects', projectSchema);

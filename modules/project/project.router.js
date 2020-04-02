@@ -20,20 +20,20 @@ const storageZip = multer.diskStorage({
 var upload = multer({ storage: storageZip });
 
 
-// project 列表
+// 项目列表
 router.post('/project/list', ProjectController.getProjects);
-// project 详情
+// 项目详情
 router.get('/project/detail', ProjectController.getProjectDetail);
-// 新增 project 
-router.post('/project/add', ProjectController.newProject);
-// 更新 project 
+// 新增项目
+router.post('/project/add', ProjectController.addProject);
+// 更新项目
 router.post('/project/update', ProjectController.updateProject);
-// 上传图片
+// 上传项目封面
 router.post('/project/uploadImg', upload.single('cover'), ProjectController.uploadImg);
-// 删除project
+// 删除项目
 router.get('/project/delete', ProjectController.deleteProject);
-// 获取project下的所有task
-router.get('/project/task/list', ProjectController.deleteProject);
+// 设置项目标签
+router.post('/project/tag/add', ProjectController.addProjectTag);
 
 
 

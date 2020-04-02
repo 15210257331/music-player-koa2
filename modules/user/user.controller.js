@@ -92,7 +92,6 @@ class UserController {
       data: doc,
       msg: '用户信息获取成功'
     }
-    await next();
   }
 
   static async uploadImg(ctx, next) {

@@ -32,22 +32,11 @@ router.get('/user/delete', UserController.deleteMember);
 router.get('/user/info', UserController.getUserInfo);
 // 修改用户信息
 router.post('/user/info/update', UserController.updateUserInfo);
-// 上传图片
+// 上传用户头像
 router.post('/user/uploadImg', upload.single('avatar'), UserController.uploadImg);
-// 成员列表
+// 用户列表
 router.post('/user/list', UserController.memberList);
-// 设置成员角色
+// 设置用户角色
 router.post('/user/setMemberRole', UserController.setMemberRole);
-
-// 角色列表
-router.post('/role/list', RoleController.getRole);
-// 添加角色
-router.post('/role/add', RoleController.addRole);
-// 修改角色
-router.post('/role/update', RoleController.updateRole);
-// 删除角色
-router.get('/role/delete', RoleController.deleteRole);
-// 角色关联权限
-router.post('/role/setAuthority', RoleController.setAuthority);
 
 module.exports = router;

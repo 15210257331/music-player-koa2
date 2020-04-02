@@ -5,56 +5,44 @@ const events = require('events');
 
 class ScheduleController {
 
-    // 查询所有日程 (查询当前用户参加的日程 且为当前时间之后的)
+    // 查询当前用户参与的和创建的所有日程
     static async getAllSchedule(ctx, next) {
-        const userId = ctx.state.userInfo._id.toString(); // 需要把objectId对象转换成string
+        const userId = ctx.state.userInfo._id;
         try {
-            const schedules = await Schedule.find({ "participant": { $elemMatch: { $eq: userId }}}).sort({ startTime: 1 });
-            const participantPromise = schedules.map(item => User.find({ "_id": { $in: item.participant } }));
-            const participant = await Promise.all(participantPromise);
-            const organizerPromise = schedules.map(item => User.findOne({ "_id": item.organizer }));
-            const organizer = await Promise.all(organizerPromise);
-            const res = schedules.map((item, i) => {
-                return {
-                    _id: item._id,
-                    name: item.name,
-                    content: item.content,
-                    organizer: organizer[i],
-                    participant: participant[i],
-                    endTime: item.endTime,
-                    startTime: item.startTime
-                }
-            })
+            // $or 多条件或查询 后跟数组 每一项是满足的每一条条件
+            const doc = await Schedule
+                .find({ $or: [{ "participant": { $elemMatch: { $eq: userId } } }, { 'creator': userId }] })
+                .populate('creator')
+                .populate('participant')
+                .sort({ startTime: 1 });
             ctx.body = {
                 code: 200,
-                data: res,
+                data: doc,
                 msg: '查询成功'
             }
         } catch (err) {
             ctx.body = {
                 code: 999,
                 data: [],
-                msg: '服务器错误'
+                msg: '查询成功'
             }
         }
     }
 
     // 新建日程
     static async addSchedule(ctx, next) {
-        const schedule = Object.assign({}, ctx.request.body, {
-            organizer: ctx.state.userInfo._id.toString(),
+        const requestBody = Object.assign({}, ctx.request.body, {
+            creator: ctx.state.userInfo._id,
         })
         try {
-            let doc = await Schedule.create(schedule);
-            const participant = await User.find({ "_id": { $in: doc.participant } });
-            const organizer = await User.findOne({ "_id": doc.organizer });
-            const res = Object.assign({}, doc._doc, {
-                participant: participant,
-                organizer: organizer
-            })
+            const schedule = await Schedule.create(requestBody);
+            const doc = await Schedule
+                .findOne({ "_id": schedule._id })
+                .populate('creator')
+                .populate('participant');
             ctx.body = {
                 code: 200,
-                data: res,
+                data: doc,
                 msg: '添加成功！'
             }
         } catch (err) {
@@ -70,7 +58,7 @@ class ScheduleController {
     static async deleteSchedule(ctx, next) {
         let scheduleId = ctx.request.query.id;
         try {
-            let doc = await Schedule.deleteOne({ _id: taskId })
+            let doc = await Schedule.deleteOne({ _id: scheduleId });
             if (doc) {
                 ctx.body = {
                     code: 200,

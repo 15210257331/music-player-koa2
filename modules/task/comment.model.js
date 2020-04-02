@@ -1,10 +1,24 @@
 const mongoose = require('../../common/db');
 
 const commentSchema = new mongoose.Schema({
-    commentAuthor: Object, // 评论人
-    content: String, // 评论内容
-    commentTime: Object, // 评论时间
-    taskId: String // 任务ID
+    content: {
+        type: String,
+        required: true
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'users'
+    },
+    time: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+    taskId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    }
 });
 
 module.exports = mongoose.model('comments', commentSchema);

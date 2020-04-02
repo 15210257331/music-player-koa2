@@ -13,16 +13,15 @@ class RoleController {
                 ctx.body = {
                     code: 200,
                     data: doc,
-                    msg: '成功'
+                    msg: '查询成功'
                 }
             }
         } catch (err) {
             ctx.body = {
                 code: 999,
-                msg: '添加失败'
+                msg: '查询失败'
             }
         }
-        await next();
     }
 
     // 添加角色
@@ -40,11 +39,9 @@ class RoleController {
         } catch (err) {
             ctx.body = {
                 code: 999,
-                token: null,
                 msg: '添加失败'
             }
         }
-        await next();
     }
 
     // 更新角色
@@ -67,7 +64,6 @@ class RoleController {
                 err: '修改失败'
             }
         }
-        await next();
     }
 
     // 角色关联权限
@@ -89,7 +85,6 @@ class RoleController {
                 err: '修改失败'
             }
         }
-        await next();
     }
 
     // 删除角色
@@ -111,7 +106,6 @@ class RoleController {
                 msg: err
             }
         }
-        await next();
     }
 }
 
