@@ -19,17 +19,19 @@ const scheduleSchema = new mongoose.Schema({
         default: Date.now,
         required: true
     },
-    // ref属性值是model名称
+    // 创建人
     creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'users'
     },
+    // 参与人
     participant: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'users'
-        }]
+        }
+    ]
 });
 
 module.exports = mongoose.model('schedules', scheduleSchema);

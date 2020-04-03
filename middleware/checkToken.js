@@ -4,14 +4,16 @@ const verify = util.promisify(jwt.verify)
 const config = require('../common/config');
 const User = require('../modules/user/user.model');
 
-const notCheckUrls = ['/api/user/login', '/api/user/register','/api/index', '/api/doc']
+const notCheckUrls = ['/api/user/login', '/api/user/register', '/api/index', '/api/doc']
 
 /**
  * 验证token中间件
  */
 function checkToken() {
     return async function (ctx, next) {
-        if (notCheckUrls.indexOf(ctx.request.url) < 0) {
+        if (ctx.request.url === '/') {
+            ctx.response.redirect('/api/index');
+        } else if (notCheckUrls.indexOf(ctx.request.url) < 0) {
             const token = ctx.header.authorization;
             if (!token) {
                 ctx.body = {

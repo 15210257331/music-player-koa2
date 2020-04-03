@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    createTime: {
+        type: Date,
+        default: Date.now
+    },
     avatar: {
         type: String
     },

@@ -32,8 +32,10 @@ router.post('/project/update', ProjectController.updateProject);
 router.post('/project/uploadImg', upload.single('cover'), ProjectController.uploadImg);
 // 删除项目
 router.get('/project/delete', ProjectController.deleteProject);
-// 设置项目标签
+// 添加项目标签
 router.post('/project/tag/add', ProjectController.addProjectTag);
+// 添加项目成员
+router.post('/project/member/add', ProjectController.addProjectMemeber);
 
 
 

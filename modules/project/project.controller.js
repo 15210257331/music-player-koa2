@@ -118,11 +118,35 @@ class ProjectController {
         } catch (err) {
             ctx.body = {
                 code: 999,
+                data: '添加失败',
+                msg: err
+            }
+        }
+    }
+
+    // 添加项目成员
+    static async addProjectMemeber(ctx, next) {
+        const projectId = ctx.request.body.projectId;
+        const memberId = ctx.request.body.memberId;
+        try {
+            await Project.update({ _id: projectId }, { $push: { participant: memberId } });
+            const doc = await User
+                .findOne({ _id: memberId })
+                .populate('role');
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '添加成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
                 data: '删除失败',
                 msg: err
             }
         }
-
     }
 
     // 删除项目

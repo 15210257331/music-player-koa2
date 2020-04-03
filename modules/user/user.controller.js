@@ -42,7 +42,7 @@ class UserController {
         msg: '登录失败'
       }
     }
-    await next();
+    // await next();
   }
 
   // 注册 / 添加成员
@@ -160,17 +160,13 @@ class UserController {
 
   // 获取所有用户列表
   static async memberList(ctx, next) {
-    const name = ctx.request.body.name;
-    const reg = new RegExp(name, 'i');
+    const nickname = ctx.request.body.name;
+    const reg = new RegExp(nickname, 'i');
     try {
-      const users = await User.find({ "nickname": { $regex: reg } }).sort({ update_at: -1 });
-      const rolesPromise = users.map(item => Role.find({ "_id": { $in: item.role } }));
-      const roles = await Promise.all(rolesPromise);
-      const doc = users.map((item, i) => {
-        return Object.assign({}, item._doc, {
-          role: roles[i]
-        })
-      })
+      const doc = await User
+        .find({ "nickname": { $regex: reg } })
+        .populate('role')
+        .sort({ createTime: -1 });
       if (doc) {
         ctx.body = {
           code: 200,

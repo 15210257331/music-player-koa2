@@ -1,7 +1,6 @@
 const Schedule = require("./schedule.model");
 const User = require('../user/user.model');
 const events = require('events');
-// const life = new events.EventEmitter();
 
 class ScheduleController {
 
