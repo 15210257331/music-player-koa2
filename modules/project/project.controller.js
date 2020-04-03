@@ -35,7 +35,7 @@ class ProjectController {
         const project = Object.assign({}, ctx.request.body, {
             creator: ctx.state.userInfo._id,
             participant: participant,
-            cover: `${config.host}:${config.port}/images/avatar/cover-default.png`,
+            cover: `${config.host}:${config.port}/images/project-cover/cover-default.png`,
             task: [],
             tag: []
         })
