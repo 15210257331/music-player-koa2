@@ -159,7 +159,10 @@ class ProjectController {
                 .populate("creator")
                 .populate("participant")
                 .populate("tag")
-                .populate("task")
+                .populate({
+                    path: 'task',
+                    populate: { path: 'principal tag' },
+                })
             ctx.body = {
                 code: 200,
                 data: doc,

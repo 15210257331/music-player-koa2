@@ -3,7 +3,7 @@ const ViewController = require('./view.controller')
 const config = require('../../common/config');
 
 const router = new Router({
-    prefix: 'view'
+    prefix: config.prefix
 })
 
 // index

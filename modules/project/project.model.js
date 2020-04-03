@@ -17,6 +17,11 @@ const projectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    // 1 正常 2 异常
+    status: {
+        type: Number,
+        default: 1
+    },
     // 任务
     task: [
         {
