@@ -1,9 +1,25 @@
 class ViewController {
     static async index(ctx, next) {
         await ctx.render('index', {
-            title: 'simple-pm 相关api接口',
-            subTitle: 'koa2版本QQ音乐api',
-            guide: '查看文档'
+            title: '小树下的大蘑菇',
+            projectList: [
+                {
+                    name: '简易项目管理',
+                    url: '182.254.178.211:8020'
+                },
+                {
+                    name: '音乐播放器手机端',
+                    url: '182.254.178.211:8020'
+                },
+                {
+                    name: '基于angular的组件库',
+                    url: '182.254.178.211:8020'
+                },
+                {
+                    name: '音乐播放器pc端',
+                    url: '182.254.178.211:8020'
+                },
+            ]
         })
     }
 
