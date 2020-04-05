@@ -59,31 +59,29 @@ class TaskController {
 
     // 更新任务
     static async updateTask(ctx, next) {
-        let taskId = ctx.state.userInfo._id;
+        const taskId = ctx.state.userInfo._id;
+        const updateData = {
+            title: ctx.request.body.title,
+            content: ctx.request.body.content,
+            remind: ctx.request.body.remind,
+            remark: ctx.request.body.remark,
+        }
         try {
-            const doc = await Task.findOneAndUpdate({
-                _id: taskId
-            }, {
-                $set: {
-                    title: ctx.request.body.title,
-                    content: ctx.request.body.content,
-                    remind: ctx.request.body.remind,
-                    remark: ctx.request.body.remark,
-                }
-            }, {
-                new: true
-            })
+            const doc = await Task
+                .findOneAndUpdate({ _id: taskId }, { $set: updateData }, { new: true })
+                .populate('tag')
+                .populate('principal')
             if (doc) {
                 ctx.body = {
                     code: 200,
-                    data: '更新成功',
+                    data: doc,
                     msg: '更新成功'
                 }
             }
         } catch (err) {
             ctx.body = {
-                code: 200,
-                data: '添加失败',
+                code: 999,
+                data: '更新失败',
                 msg: err
             }
         }

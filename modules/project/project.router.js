@@ -36,6 +36,8 @@ router.get('/project/delete', ProjectController.deleteProject);
 router.post('/project/tag/add', ProjectController.addProjectTag);
 // 添加项目成员
 router.post('/project/member/add', ProjectController.addProjectMemeber);
+// 添加项目类型
+router.post('/project/type/add', ProjectController.addProjectType);
 
 
 

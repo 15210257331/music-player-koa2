@@ -9,6 +9,11 @@ const taskSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    createTime: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
     startTime: {
         type: Date,
         default: Date.now,
@@ -25,11 +30,6 @@ const taskSchema = new mongoose.Schema({
         default: 1,
         required: true
     },
-    type: {
-        type: Number,
-        default: 1,
-        required: true
-    },
     // 任务标签
     tag: [
         {
@@ -37,6 +37,11 @@ const taskSchema = new mongoose.Schema({
             ref: 'tag'
         }
     ],
+    // 任务类型
+    type: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'type'
+    },
     // 任务负责人
     principal: {
         type: mongoose.Schema.Types.ObjectId,

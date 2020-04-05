@@ -49,6 +49,13 @@ const projectSchema = new mongoose.Schema({
             ref: 'tag'
         }
     ],
+    // 项目标签
+    type: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'type'
+        }
+    ],
     createTime: {
         type: Date,
         default: Date.now

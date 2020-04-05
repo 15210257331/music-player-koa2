@@ -2,6 +2,7 @@ const Project = require("./project.model");
 const Task = require("../task/task.model");
 const User = require('../user/user.model');
 const Tag = require("./tag.model");
+const Type = require("./type.model");
 const config = require('../../common/config');
 class ProjectController {
     // 查询当前用户参与的项目可以按name搜索,按时间倒序排列
@@ -124,6 +125,31 @@ class ProjectController {
         }
     }
 
+    // 添加项目类型
+    static async addProjectType(ctx, next) {
+        const insertData = {
+            name: ctx.request.body.name,
+        }
+        const projectId = ctx.request.body.projectId;
+        try {
+            const doc = await Type.create(insertData);
+            await Project.update({ _id: projectId }, { $push: { type: doc._id } });
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '添加成功'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '添加失败',
+                msg: err
+            }
+        }
+    }
+
     // 添加项目成员
     static async addProjectMemeber(ctx, next) {
         const projectId = ctx.request.body.projectId;
@@ -183,8 +209,10 @@ class ProjectController {
                 .populate("creator")
                 .populate("participant")
                 .populate("tag")
+                .populate('type')
                 .populate({
                     path: 'task',
+                    options: { sort: { 'createTime': -1 } },
                     populate: { path: 'principal tag' },
                 })
             ctx.body = {
