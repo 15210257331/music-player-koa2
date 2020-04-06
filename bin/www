@@ -17,7 +17,7 @@ var port = normalizePort(process.env.PORT || config.port);
  * Create HTTP server.
  */
 var server = http.createServer(app.callback());
-socketio.getSocketio(server);  // 监听websocket
+socketio(server);  // 监听websocket
 
 /**
  * Listen on provided port, on all network interfaces.

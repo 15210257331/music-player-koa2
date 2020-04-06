@@ -57,7 +57,7 @@ class TaskController {
     }
 
 
-    // 更新任务
+    // 更新任务（待完成）
     static async updateTask(ctx, next) {
         const taskId = ctx.state.userInfo._id;
         const updateData = {

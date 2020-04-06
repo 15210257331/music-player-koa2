@@ -9,6 +9,8 @@ const router = new Router({
 
 // 消息列表
 router.get('/message/list', MessageController.getMessages);
+// 更改消息读取状态
+router.get('/message/status', MessageController.messageStatus);
 
 
 

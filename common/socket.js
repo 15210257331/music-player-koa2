@@ -1,42 +1,39 @@
 const socket_io = require('socket.io');
-const Schedule = require("../modules/schedule/schedule.model");
 const moment = require('moment');
 const Message = require("../modules/message/message.model");
+const schedule = require('node-schedule');
+const setRemind = require('../modules/schedule/schedule.job');
 
-var socketio = {};
+// userId : socket  记录登录每个登录用户id和他对应的socket的集合
+var users = {};
 
-var interval;
-
-var users = {}; // userId : socket  记录登录每个登录用户id和他对应的socket的集合
-
-// 在socket对象上添加一个getSocketio的方法
-
-socketio.getSocketio = function (server) {
-
+const socketio = (server) => {
     const io = socket_io.listen(server);
-
-    io.sockets.on('connection', async (socket) => { // socket代表连接上socket的client实例
-        // 设置日程提醒
-        socket.on('setRemind', async (data) => {
-            setRemind(socket, data);
-        })
+    // socket代表连接上socket的client实例
+    io.sockets.on('connection', async (socket) => {
+        // 日程提醒
+        setRemind(socket);
         // 新登录用户 data 是用户ID  userId
         socket.on('new user', async (data) => {
             const keys = Object.keys(users);
             if (data && keys.indexOf(data) < 0) {
                 users[data] = socket;
             }
+            // const doc = await Message.find({ to: data, isReade: false });
+            // if (doc.length > 0) {
+            //     doc.map(item => {
+            //         socket.emit('to' + item.to, item);
+            //     })
+            // }
             // console.log(Object.keys(users));
         })
         // 发送一对一消息  data.from 和 data.to 都是userId
         socket.on('private message', async (data) => {
-            const msg = Object.assign({}, data, {
-                msgDate: new Date().getTime()
-            });
-            // 如果在线直接发送过去 如果不在线不发送存数据库之后再推送
-            if (users[data.to]) { 
-                users[data.to].emit('to' + data.to, msg);
-                await Message.create(msg);
+            // 对方在线直接发送过去
+            if (users[data.to]) {
+                users[data.to].emit('to' + data.to, data);
+                await Message.create(data);
+                // 如果不在线不发送存数据库等上线再发送
             } else {
                 await Message.create(msg);
             }
@@ -52,22 +49,4 @@ socketio.getSocketio = function (server) {
         });
     })
 };
-
-// 设置日程提醒
-var setRemind = async (socket, userId) => {
-    if (interval) {
-        clearInterval(interval)
-    }
-    let scheduleList = await Schedule.find({ "participant": { $elemMatch: { $eq: userId } }, startTime: { $gte: Number(moment().format('x')) } }).sort({ startTime: 1 });
-    interval = setInterval(function () {
-        scheduleList.map(item => {
-            const scheduleRemindTime = Number(moment(item.startTime).format('X')) - 60 * 2;
-            let now = Number(moment().format('X'));
-            if (now === scheduleRemindTime) {
-                socket.emit("remind", { data: `日程${item.name}于${moment(item.startTime).format('YYYY-MM-DD HH:mm:ss')}开始` }); // 向该客户端发送getMsg事件
-            }
-        })
-    }, 1000);
-}
-
 module.exports = socketio;

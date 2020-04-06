@@ -30,6 +30,20 @@ class MessageController {
             }
         }
     }
+
+    // 更改消息读取状态
+    static async messageStatus(ctx, next) {
+        const msgId = ctx.request.query.id;
+        try {
+            await Message.update({ _id: msgId }, { $set: { isReade: true } });
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '服务器错误',
+                msg: err
+            }
+        }
+    }
 }
 
 module.exports = MessageController;
