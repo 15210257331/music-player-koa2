@@ -12,6 +12,10 @@ router.get('/message/list', MessageController.getMessages);
 // 更改消息读取状态
 router.get('/message/status', MessageController.messageStatus);
 
+router.get('/message/get/chat', MessageController.getChatList);
+
+router.post('/message/add/chat', MessageController.addChat);
+
 
 
 module.exports = router

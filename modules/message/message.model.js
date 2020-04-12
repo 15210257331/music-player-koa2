@@ -3,21 +3,15 @@ const mongoose = require('../../common/db');
 const messageSchema = new mongoose.Schema({
     // 发送人ID
     from: {
-        type: String,
-        required: true
-    },
-    fromAvatar: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'users'
     },
     // 接收人ID
     to: {
-        type: String,
-        required: true
-    },
-    toAvatar: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'users'
     },
     // 消息类型 1 文本消息  2 其它
     msgType: {
@@ -25,13 +19,14 @@ const messageSchema = new mongoose.Schema({
         required: true
     },
     // 消息内容
-    msg: {
+    content: {
         type: String,
         required: true
     },
     // 发送消息时间
-    msgDate: {
+    msgTime: {
         type: Date,
+        required: true,
         default: Date.now
     },
     // 是否已读 默认是未读的

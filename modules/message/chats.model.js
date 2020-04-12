@@ -2,39 +2,28 @@ const mongoose = require('../../common/db');
 
 // 聊天信息从接口取得不要存在本地了
 const chatsSchema = new mongoose.Schema({
-    numbers: [{
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+    },
+    other: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
-    }],
-    messages: [
-        {
-            from: {
-                type: String,
-                required: true
-            },
-            to: {
-                type: String,
-                required: true
-            },
-            type: {
-                type: Number,
-                default: 1
-            },
-            content: {
-                type: String,
-                required: true
-            },
-            sendTime: {
-                type: Date,
-                default: Date.now
-            },
-            // 是否已读 默认是未读的
-            isReade: {
-                type: Boolean,
-                default: false
-            }
-        }
-    ]
+    },
+    lastMessage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'messages',
+        required: false
+    },
+    unreadCount: {
+        type: Number,
+        default: 0
+    },
+    createTime: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
 });
 
 module.exports = mongoose.model('chats', chatsSchema);

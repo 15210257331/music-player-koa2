@@ -31,11 +31,12 @@ const socketio = (server) => {
         socket.on('private message', async (data) => {
             // 对方在线直接发送过去
             if (users[data.to]) {
+                console.log('在线直接发送');
                 users[data.to].emit('to' + data.to, data);
                 await Message.create(data);
                 // 如果不在线不发送存数据库等上线再发送
             } else {
-                await Message.create(msg);
+               // await Message.create(msg);
             }
         })
         // 用户登出
