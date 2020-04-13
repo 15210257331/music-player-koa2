@@ -14,6 +14,8 @@ router.get('/message/status', MessageController.messageStatus);
 
 router.get('/message/get/chat', MessageController.getChatList);
 
+router.post('/message/update/chat', MessageController.updateChatList);
+
 router.post('/message/add/chat', MessageController.addChat);
 
 

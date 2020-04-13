@@ -1,15 +1,10 @@
 const mongoose = require('../../common/db');
 
-// 聊天信息从接口取得不要存在本地了
 const chatsSchema = new mongoose.Schema({
-    owner: {
+    members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',
-    },
-    other: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users'
-    },
+    }],
     lastMessage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'messages',

@@ -52,58 +52,13 @@ class MessageController {
         }
     }
 
-    // 保存chat
-    static async addChat(ctx, next) {
-        const body = ctx.request.body;
-        try {
-            let message1 = await Message.find({ 'from': body.owner, 'to': body.other });
-            let message2 = await Message.find({ 'from': body.other, 'to': body.owner });
-            let message = message1.concat(message2).sort(function (a, b) {
-                return a.msgTime - b.msgTime;
-            })
-            if (message && message.length > 0) {
-                const data = Object.assign({}, body, {
-                    lastMessage: message[0]._id
-                })
-                let doc = await Chats.create(data);
-                // 我发给目标好友的消息
-                if (doc) {
-                    ctx.body = {
-                        code: 200,
-                        data: doc,
-                        msg: '添加成功！'
-                    }
-                }
-            } else {
-                const data = body;
-                let doc = await Chats.create(data);
-                // 我发给目标好友的消息
-                if (doc) {
-                    ctx.body = {
-                        code: 200,
-                        data: doc,
-                        msg: '添加成功！'
-                    }
-                }
-            }
-        } catch (err) {
-            ctx.body = {
-                code: 999,
-                data: '获取失败',
-                msg: err
-            }
-        }
-    }
-
     // 获取chat列表
     static async getChatList(ctx, next) {
         const userId = ctx.state.userInfo._id.toString(); // 当前登录用户ID
         try {
-            // 目标好友发给我的消息
-            let doc = await Chats
-                .find({ "owner": userId })
-                .populate('owner')
-                .populate('other')
+            const doc = await Chats
+                .find({ "members": { $elemMatch: { $eq: userId } } })
+                .populate('members')
                 .populate('lastMessage')
                 .sort({ 'createTime': -1 })
             // 我发给目标好友的消息
@@ -118,6 +73,62 @@ class MessageController {
             ctx.body = {
                 code: 999,
                 data: '获取失败',
+                msg: err
+            }
+        }
+    }
+
+    // 更新chat
+    static async updateChatList(ctx, next) {
+        const chatId = ctx.request.body.id;
+        const from = ctx.request.body.from;
+        const to = ctx.request.body.to;
+        try {
+            const lastMessage = await Message.findOne({ 'from': from, 'to': to });
+            const doc = await Chats
+                .findOneAndUpdate(
+                    { '_id': chatId },
+                    {
+                        $set: {
+                            lastMessage: lastMessage._id
+                        }
+                    },
+                    { new: true })
+                .populate('members')
+                .populate('lastMessage')
+                .sort({ 'createTime': -1 })
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '更新成功！'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '更新失败',
+                msg: err
+            }
+        }
+    }
+
+    // 保存chat
+    static async addChat(ctx, next) {
+        const body = ctx.request.body;
+        try {
+            const doc = await Chats.create(body);
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '保存成功！'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '保存失败',
                 msg: err
             }
         }
