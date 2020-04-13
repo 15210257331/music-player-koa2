@@ -54,11 +54,12 @@ class MessageController {
 
     // 获取chat列表
     static async getChatList(ctx, next) {
-        const userId = ctx.state.userInfo._id.toString(); // 当前登录用户ID
+        const userId = ctx.state.userInfo._id;
         try {
             const doc = await Chats
-                .find({ "members": { $elemMatch: { $eq: userId } } })
-                .populate('members')
+                .find({ "from": userId })
+                .populate('from')
+                .populate('to')
                 .populate('lastMessage')
                 .sort({ 'createTime': -1 })
             // 我发给目标好友的消息
@@ -73,41 +74,6 @@ class MessageController {
             ctx.body = {
                 code: 999,
                 data: '获取失败',
-                msg: err
-            }
-        }
-    }
-
-    // 更新chat
-    static async updateChatList(ctx, next) {
-        const chatId = ctx.request.body.id;
-        const from = ctx.request.body.from;
-        const to = ctx.request.body.to;
-        try {
-            const lastMessage = await Message.findOne({ 'from': from, 'to': to });
-            const doc = await Chats
-                .findOneAndUpdate(
-                    { '_id': chatId },
-                    {
-                        $set: {
-                            lastMessage: lastMessage._id
-                        }
-                    },
-                    { new: true })
-                .populate('members')
-                .populate('lastMessage')
-                .sort({ 'createTime': -1 })
-            if (doc) {
-                ctx.body = {
-                    code: 200,
-                    data: doc,
-                    msg: '更新成功！'
-                }
-            }
-        } catch (err) {
-            ctx.body = {
-                code: 999,
-                data: '更新失败',
                 msg: err
             }
         }
@@ -129,6 +95,40 @@ class MessageController {
             ctx.body = {
                 code: 999,
                 data: '保存失败',
+                msg: err
+            }
+        }
+    }
+
+    // 更新chat
+    static async updateChatList(ctx, next) {
+        const chatId = ctx.request.body.id;
+        const messageId = ctx.request.body.messageId;
+        try {
+            const doc = await Chats
+                .findOneAndUpdate(
+                    { '_id': chatId },
+                    {
+                        $set: {
+                            lastMessage: messageId
+                        }
+                    },
+                    { new: true })
+                .populate('from')
+                .populate('to')
+                .populate('lastMessage')
+                .sort({ 'createTime': -1 })
+            if (doc) {
+                ctx.body = {
+                    code: 200,
+                    data: doc,
+                    msg: '更新成功！'
+                }
+            }
+        } catch (err) {
+            ctx.body = {
+                code: 999,
+                data: '更新失败',
                 msg: err
             }
         }
