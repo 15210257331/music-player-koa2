@@ -6,8 +6,8 @@ const path = require('path');
     prefix: '/api', // 接口前缀
     mongoDB: {
         database: 'pm',
-        username: 'test',
-        password: 'test',
+        username: 'chenxiaofei',
+        password: 'chenxiaofei1992',
         host: '182.254.178.211',
         port: 27017
     },
